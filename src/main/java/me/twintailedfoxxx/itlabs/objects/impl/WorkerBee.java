@@ -4,6 +4,9 @@ import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.Bee;
 import me.twintailedfoxxx.itlabs.objects.IBehaviour;
 
+/**
+ * Рабочая пчела
+ */
 public class WorkerBee extends Bee implements IBehaviour {
     @Override
     public int getSpawnSeconds() {

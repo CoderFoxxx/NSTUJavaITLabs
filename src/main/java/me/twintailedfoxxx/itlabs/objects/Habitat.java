@@ -1,7 +1,7 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -17,21 +17,47 @@ import java.util.concurrent.TimeUnit;
 
 public class Habitat
 {
-    private final BorderPane root;
+    // Контейнер-корень
+    private final Pane root;
+
+    // Текст, в котором показывается число созданных пчёл
     private final Text beesSpawnedText;
+
+    // Текст, в котором показывается число рабочих пчёл
     private final Text workerBeesSpawnedText;
+
+    // Текст, в котором показывается число трутней
     private final Text dogBeesSpawnedText;
+
+    // Текст, в котором пишется время, затраченное на симуляцию
     private final Text simulationText;
-    private double width;
-    private double height;
+
+    // Список созданных пчёл
     private final List<Bee> bees;
+
+    // Ширина поля
+    private double width;
+
+    // Высота поля
+    private double height;
+
+    // Время начала симуляции
     private long startTime = 0L;
+
+    // Состояние симуляции
     private boolean simulationRunning;
 
-    public Habitat(double width, double height) {
+
+    /**
+     * Конструктор окружения
+     * @param root корневой контейнер <code>Pane</code>
+     * @param width ширина поля
+     * @param height высота поля
+     */
+    public Habitat(Pane root, double width, double height) {
         this.width = width;
         this.height = height;
-        this.root = new BorderPane();
+        this.root = root;
         bees = new ArrayList<>();
 
         beesSpawnedText = new Text("Bees spawned: ");
@@ -64,10 +90,14 @@ public class Habitat
         root.getChildren().add(simulationText);
     }
 
+    /**
+     * Этот метод вызывается раз в секунду во время симуляции.
+     * @param elapsed затраченное время
+     */
     public void update(long elapsed) {
-        while(simulationRunning) {
+        if(simulationRunning) {
             Bee bee = generateRandomBee();
-            if(bee.canSpawn() && TimeUnit.MILLISECONDS.toSeconds(elapsed) / (long)bee.getSpawnSeconds() == 0L) {
+            if(bee.canSpawn() && TimeUnit.MILLISECONDS.toSeconds(elapsed) % (long)bee.getSpawnSeconds() == 0L) {
                 bees.add(bee);
                 // TODO: place smth (square or image of bee)
             }
@@ -77,52 +107,96 @@ public class Habitat
         }
     }
 
+    /**
+     * Метод, начинающий симуляцию
+     */
     public void startSimulation() {
         simulationRunning = true;
         startTime = System.currentTimeMillis();
         setTextVisibility(true);
     }
 
+    /**
+     * Метод, заканчивающий симуляцию
+     */
     public void stopSimulation() {
         bees.clear();
         simulationRunning = false;
         setTextVisibility(true);
     }
 
+    /**
+     * Ширина поля
+     * @return вещественное число - ширина поля
+     */
     public double getWidth() {
         return width;
     }
 
+    /**
+     * Высота поля
+     * @return вещественное число - высота поля
+     */
     public double getHeight() {
         return height;
     }
 
+    /**
+     * Установка новой ширины поля
+     * @param width новая ширина поля
+     */
     public void setWidth(double width) {
         this.width = width;
     }
 
+    /**
+     * Установка новой высоты поля
+     * @param height новая высота поля
+     */
     public void setHeight(double height) {
         this.height = height;
     }
 
+    /**
+     * Список созданных пчёл
+     * @return список всех созданных пчёл
+     */
     public List<Bee> getSpawnedBees() {
         return bees;
     }
 
+    /**
+     * Состояние симуляции
+     * @return <code>true</code>, если симуляция запущена<br>
+     * <code>false</code>, если симуляция остановлена
+     */
     public boolean isSimulationRunning() {
         return simulationRunning;
     }
 
-    public BorderPane getRoot() {
+    /**
+     * Корневой контейнер
+     * @return элемент корневого контейнера <code>Pane</code>
+     */
+    public Pane getRoot() {
         return root;
     }
 
+    /**
+     * Установка видимости текста в сцене
+     * @param visibility <code>true</code> - показать текст<br>
+     *                   <code>false</code> - скрыть текст
+     */
     public void setTextVisibility(boolean visibility) {
         for(Node text : root.getChildren().stream().filter(x -> x instanceof Text).toList()) {
             text.setVisible(visibility);
         }
     }
 
+    /**
+     * Обновление содержания текстовых объектов
+     * @param elapsed затраченное время на симуляцию
+     */
     private void updateText(long elapsed) {
         Duration duration = Duration.ofMillis(elapsed);
         long elapsedSeconds = duration.getSeconds();
@@ -132,6 +206,10 @@ public class Habitat
         simulationText.setText(String.format("Simulation time: %02d:%02d", (elapsedSeconds % 3600) / 60, elapsedSeconds % 60));
     }
 
+    /**
+     * Генерация случайной пчелы
+     * @return случайно сгенерированный элемент пчелы
+     */
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
         if(p < 0.5) {
