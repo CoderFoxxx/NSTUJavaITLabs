@@ -1,6 +1,8 @@
 package me.twintailedfoxxx.itlabs.objects;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,6 +21,12 @@ public class Habitat
 {
     // Контейнер-корень
     private final Pane root;
+
+    //Контейнер, содержащий статистику
+    private final Pane statsPane;
+
+    // Текст-подсказка
+    private final Text hintText;
 
     // Текст, в котором показывается число созданных пчёл
     private final Text beesSpawnedText;
@@ -41,11 +49,11 @@ public class Habitat
     // Высота поля
     private double height;
 
-    // Время начала симуляции
-    private long startTime = 0L;
-
     // Состояние симуляции
     private boolean simulationRunning;
+
+    // Видимость текста времени симуляции
+    private boolean isSimulationTimeVisible;
 
 
     /**
@@ -58,36 +66,45 @@ public class Habitat
         this.width = width;
         this.height = height;
         this.root = root;
-        bees = new ArrayList<>();
+        this.bees = new ArrayList<>();
+        this.statsPane = new Pane();
 
-        beesSpawnedText = new Text("Bees spawned: ");
+        hintText = new Text("Press B to begin the simulation, T to show simulation time.");
+        hintText.setFont(Font.font("Roboto Regular", 20));
+        hintText.setTextAlignment(TextAlignment.CENTER);
+
+        beesSpawnedText = new Text("Bees spawned:");
         beesSpawnedText.setFont(Font.font("Comic Sans MS", 30));
         beesSpawnedText.setStroke(Color.RED);
         beesSpawnedText.setTextAlignment(TextAlignment.LEFT);
         beesSpawnedText.setY(40);
 
-        workerBeesSpawnedText = new Text("Worker Bees spawned: ");
+        workerBeesSpawnedText = new Text("Worker Bees spawned:");
         workerBeesSpawnedText.setFont(Font.font("Arial", 20));
         workerBeesSpawnedText.setStroke(Color.DEEPSKYBLUE);
         workerBeesSpawnedText.setTextAlignment(TextAlignment.LEFT);
         workerBeesSpawnedText.setY(beesSpawnedText.getY() + 15);
 
-        dogBeesSpawnedText = new Text("Dog Bees spawned: ");
+        dogBeesSpawnedText = new Text("Dog Bees spawned:");
         dogBeesSpawnedText.setFont(Font.font("Courier New", 20));
         dogBeesSpawnedText.setStroke(Color.VIOLET);
         dogBeesSpawnedText.setTextAlignment(TextAlignment.LEFT);
         dogBeesSpawnedText.setY(workerBeesSpawnedText.getY() + 15);
 
-        simulationText = new Text("Simulation time: ");
+        simulationText = new Text("Simulation time:");
+        simulationText.setId("stats_simTime");
         simulationText.setFont(Font.font("Times New Roman", 20));
         simulationText.setStroke(Color.DARKGREY);
-        simulationText.setTextAlignment(TextAlignment.LEFT);
+        simulationText.setTextAlignment(TextAlignment.CENTER);
         simulationText.setY(dogBeesSpawnedText.getY() + 15);
 
-        root.getChildren().add(beesSpawnedText);
-        root.getChildren().add(workerBeesSpawnedText);
-        root.getChildren().add(dogBeesSpawnedText);
-        root.getChildren().add(simulationText);
+        hintText.setY(simulationText.getY() + 15);
+
+        statsPane.getChildren().addAll(beesSpawnedText, workerBeesSpawnedText, dogBeesSpawnedText);
+        root.getChildren().addAll(simulationText, hintText);
+
+        simulationText.setVisible(false);
+        statsPane.setVisible(false);
     }
 
     /**
@@ -97,12 +114,9 @@ public class Habitat
     public void update(long elapsed) {
         if(simulationRunning) {
             Bee bee = generateRandomBee();
-            if(bee.canSpawn() && TimeUnit.MILLISECONDS.toSeconds(elapsed) % (long)bee.getSpawnSeconds() == 0L) {
-                bees.add(bee);
-                // TODO: place smth (square or image of bee)
+            if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnSeconds() == 0L) {
+                placeBee(bee);
             }
-
-            elapsed = System.currentTimeMillis() - startTime;
             updateText(elapsed);
         }
     }
@@ -112,17 +126,18 @@ public class Habitat
      */
     public void startSimulation() {
         simulationRunning = true;
-        startTime = System.currentTimeMillis();
-        setTextVisibility(true);
+        hintText.setText("Press E to stop simulation, T to show simulation time.");
     }
 
     /**
      * Метод, заканчивающий симуляцию
      */
     public void stopSimulation() {
-        bees.clear();
         simulationRunning = false;
-        setTextVisibility(true);
+        statsPane.setVisible(true);
+        bees.clear();
+        root.getChildren().removeIf(x -> x instanceof ImageView);
+        hintText.setText("Press B to start simulation again, T to show simulation time.");
     }
 
     /**
@@ -175,22 +190,24 @@ public class Habitat
     }
 
     /**
-     * Корневой контейнер
-     * @return элемент корневого контейнера <code>Pane</code>
+     * Установка видимости текста времени симуляции в сцене
+     * @param visibility <code>true</code> &ndash; показать текст<br>
+     *                   <code>false</code> &ndash; скрыть текст
      */
-    public Pane getRoot() {
-        return root;
+    public void setSimulationTimeVisibility(boolean visibility) {
+        isSimulationTimeVisible = visibility;
+        for(Node text : root.getChildren().filtered(x -> x instanceof Text && x.getId() != null && x.getId().equalsIgnoreCase("stats_simTime"))) {
+            text.setVisible(visibility);
+        }
     }
 
     /**
-     * Установка видимости текста в сцене
-     * @param visibility <code>true</code> - показать текст<br>
-     *                   <code>false</code> - скрыть текст
+     * Видимость текста времени симуляции в сцене
+     * @return <code>true</code> &ndash; время видно на сцене<br>
+     * <code>false</code> &ndash; время не видно на сцене
      */
-    public void setTextVisibility(boolean visibility) {
-        for(Node text : root.getChildren().stream().filter(x -> x instanceof Text).toList()) {
-            text.setVisible(visibility);
-        }
+    public boolean isSimulationTimeVisible() {
+        return isSimulationTimeVisible;
     }
 
     /**
@@ -212,10 +229,33 @@ public class Habitat
      */
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
-        if(p < 0.5) {
+        int dogBees = bees.stream().filter(x -> x instanceof DogBee).toList().size();
+
+        if((double)dogBees / bees.size() <= 0.2) {
             return new DogBee();
-        } else {
+        } else if(p <= 0.9) {
             return new WorkerBee();
         }
+
+        return null;
+    }
+
+    /**
+     * Разместить пчелу <code>Bee</code> на сцену.
+     * @param bee размещаемая пчела.
+     */
+    private void placeBee(Bee bee) {
+        bees.add(bee);
+
+        ImageView view = new ImageView(bee.getImage());
+        view.setFitWidth(30);
+        view.setFitHeight(30);
+
+        double x = MainApplication.instance.random.nextDouble() * (width - view.getFitWidth());
+        double y = MainApplication.instance.random.nextDouble() * (height - view.getFitHeight());
+        view.setX(x);
+        view.setY(y);
+
+        Platform.runLater(() -> root.getChildren().add(view));
     }
 }
