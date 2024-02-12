@@ -1,9 +1,15 @@
 package me.twintailedfoxxx.itlabs.objects.impl;
 
+import javafx.scene.image.Image;
 import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.Bee;
 import me.twintailedfoxxx.itlabs.objects.IBehaviour;
 
+import java.util.Objects;
+
+/**
+ * Рабочая пчела
+ */
 public class WorkerBee extends Bee implements IBehaviour {
     @Override
     public int getSpawnSeconds() {
@@ -11,7 +17,7 @@ public class WorkerBee extends Bee implements IBehaviour {
     }
 
     @Override
-    public boolean canSpawn() {
-        return MainApplication.instance.random.nextDouble() <= 0.9;
+    public Image getImage() {
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/worker_bee.png")));
     }
 }

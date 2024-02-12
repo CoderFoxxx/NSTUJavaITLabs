@@ -1,22 +1,23 @@
 package me.twintailedfoxxx.itlabs.objects.impl;
 
+import javafx.scene.image.Image;
 import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.Bee;
 import me.twintailedfoxxx.itlabs.objects.IBehaviour;
 
-public class DogBee extends Bee implements IBehaviour {
-    private static int count = 0;
+import java.util.Objects;
 
-    public DogBee() {
-        count++;
-    }
+/**
+ * Трутень
+ */
+public class DogBee extends Bee implements IBehaviour {
     @Override
     public int getSpawnSeconds() {
         return 15;
     }
 
     @Override
-    public boolean canSpawn() {
-        return MainApplication.instance.habitat.getSpawnedBees().size() / count * 100 < 2;
+    public Image getImage() {
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/dog_bee.png")));
     }
 }
