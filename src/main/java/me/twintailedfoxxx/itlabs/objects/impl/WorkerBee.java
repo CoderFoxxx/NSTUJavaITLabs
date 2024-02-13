@@ -14,12 +14,6 @@ public class WorkerBee extends Bee implements IBehaviour {
     private static int seconds = 2;
     private static double chance = 0.9;
 
-    public WorkerBee() {}
-
-    public WorkerBee(int seconds) {
-        WorkerBee.seconds = seconds;
-    }
-
     @Override
     public int getSpawnSeconds() {
         return seconds;

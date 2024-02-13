@@ -13,12 +13,6 @@ public class DogBee extends Bee implements IBehaviour {
     private static int seconds = 5;
     private static double threshold = 0.2;
 
-    public DogBee() {}
-
-    public DogBee(int seconds) {
-        DogBee.seconds = seconds;
-    }
-
     @Override
     public int getSpawnSeconds() {
         return seconds;
