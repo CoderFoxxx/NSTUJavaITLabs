@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class WorkerBee extends Bee implements IBehaviour {
     private static int seconds = 2;
-    private static double chance = 0.5;
+    private static double chance = 0.9;
 
     public WorkerBee() {}
 
