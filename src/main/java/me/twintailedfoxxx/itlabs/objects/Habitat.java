@@ -13,8 +13,7 @@ import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class Habitat
@@ -40,8 +39,11 @@ public class Habitat
     // Текст, в котором пишется время, затраченное на симуляцию
     private final Text simulationText;
 
-    // Список созданных пчёл
-    private final List<Bee> bees;
+    // Массив пчёл
+    private final Bee[] bees;
+
+    // Количество появившихся пчёл
+    private int beesSpawned;
 
     // Ширина поля
     private double width;
@@ -66,8 +68,8 @@ public class Habitat
         this.width = width;
         this.height = height;
         this.root = root;
-        this.bees = new ArrayList<>();
         this.statsPane = new Pane();
+        this.bees = new Bee[1024];
 
         hintText = new Text("Press B to begin the simulation, T to show simulation time.");
         hintText.setFont(Font.font("Roboto Regular", 20));
@@ -101,7 +103,7 @@ public class Habitat
         hintText.setY(simulationText.getY() + 15);
 
         statsPane.getChildren().addAll(beesSpawnedText, workerBeesSpawnedText, dogBeesSpawnedText);
-        root.getChildren().addAll(simulationText, hintText);
+        root.getChildren().addAll(statsPane, simulationText, hintText);
 
         simulationText.setVisible(false);
         statsPane.setVisible(false);
@@ -135,7 +137,9 @@ public class Habitat
     public void stopSimulation() {
         simulationRunning = false;
         statsPane.setVisible(true);
-        bees.clear();
+        for(int i = 0; i < beesSpawned; i++) {
+            bees[i] = null;
+        }
         root.getChildren().removeIf(x -> x instanceof ImageView);
         hintText.setText("Press B to start simulation again, T to show simulation time.");
     }
@@ -173,10 +177,10 @@ public class Habitat
     }
 
     /**
-     * Список созданных пчёл
-     * @return список всех созданных пчёл
+     * Массив созданных пчёл
+     * @return массив всех созданных пчёл
      */
-    public List<Bee> getSpawnedBees() {
+    public Bee[] getSpawnedBees() {
         return bees;
     }
 
@@ -196,7 +200,8 @@ public class Habitat
      */
     public void setSimulationTimeVisibility(boolean visibility) {
         isSimulationTimeVisible = visibility;
-        for(Node text : root.getChildren().filtered(x -> x instanceof Text && x.getId() != null && x.getId().equalsIgnoreCase("stats_simTime"))) {
+        for(Node text : root.getChildren().filtered(x -> x instanceof Text && x.getId() != null &&
+                x.getId().equalsIgnoreCase("stats_simTime"))) {
             text.setVisible(visibility);
         }
     }
@@ -217,10 +222,13 @@ public class Habitat
     private void updateText(long elapsed) {
         Duration duration = Duration.ofMillis(elapsed);
         long elapsedSeconds = duration.getSeconds();
-        beesSpawnedText.setText("Bees spawned: " + bees.size());
-        workerBeesSpawnedText.setText("Worker bees spawned: " + bees.stream().filter(x -> x instanceof WorkerBee).toList().size());
-        dogBeesSpawnedText.setText("Dog bees spawned: " + bees.stream().filter(x -> x instanceof DogBee).toList().size());
-        simulationText.setText(String.format("Simulation time: %02d:%02d", (elapsedSeconds % 3600) / 60, elapsedSeconds % 60));
+        beesSpawnedText.setText("Bees spawned: " + beesSpawned);
+        workerBeesSpawnedText.setText("Worker bees spawned: " + Arrays.stream(bees).filter(x -> x instanceof WorkerBee)
+                .toArray().length);
+        dogBeesSpawnedText.setText("Dog bees spawned: " + Arrays.stream(bees).filter(x -> x instanceof DogBee)
+                .toArray().length);
+        simulationText.setText(String.format("Simulation time: %02d:%02d", (elapsedSeconds % 3600) / 60,
+                elapsedSeconds % 60));
     }
 
     /**
@@ -229,9 +237,9 @@ public class Habitat
      */
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
-        int dogBees = bees.stream().filter(x -> x instanceof DogBee).toList().size();
+        int dogBees = Arrays.stream(bees).filter(x -> x instanceof DogBee).toArray().length;
 
-        if((double)dogBees / bees.size() <= 0.2) {
+        if((double)dogBees / beesSpawned <= 0.2) {
             return new DogBee();
         } else if(p <= 0.9) {
             return new WorkerBee();
@@ -245,7 +253,8 @@ public class Habitat
      * @param bee размещаемая пчела.
      */
     private void placeBee(Bee bee) {
-        bees.add(bee);
+        bees[beesSpawned] = bee;
+        beesSpawned += 1;
 
         ImageView view = new ImageView(bee.getImage());
         view.setFitWidth(30);

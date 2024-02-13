@@ -13,7 +13,7 @@ import java.util.Objects;
 public class WorkerBee extends Bee implements IBehaviour {
     @Override
     public int getSpawnSeconds() {
-        return 5;
+        return 2;
     }
 
     @Override
