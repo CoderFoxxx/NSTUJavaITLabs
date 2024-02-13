@@ -1,11 +1,16 @@
 package me.twintailedfoxxx.itlabs;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import me.twintailedfoxxx.itlabs.objects.Habitat;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,14 +19,14 @@ public class MainApplication extends Application {
     public static MainApplication instance;
     public Random random;
     public Timer timer;
+    public long elapsed;
     public Habitat habitat;
     private long start;
 
     @Override
-    public void start(Stage stage) {
-        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("hello-view.fxml"));
+    public void start(Stage stage) throws IOException {
+        BorderPane root = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource("app-view.fxml")));
         Scene scene;
-        BorderPane root = new BorderPane();
 
         instance = this;
         random = new Random();
@@ -30,26 +35,10 @@ public class MainApplication extends Application {
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case B:
-                    if(!habitat.isSimulationRunning()) {
-                        start = System.currentTimeMillis();
-                        timer = new Timer();
-                        habitat.startSimulation();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                habitat.update(System.currentTimeMillis() - start);
-                            }
-                        }, 0, 1000);
-                    }
+                    handleSimulationStart();
                     break;
                 case E:
-                    if(habitat.isSimulationRunning()) {
-                        habitat.stopSimulation();
-                        timer.cancel();
-                    }
-                    break;
-                case T:
-                    habitat.setSimulationTimeVisibility(!habitat.isSimulationTimeVisible());
+                    handleSimulationStop();
                     break;
             }
         });
@@ -59,6 +48,28 @@ public class MainApplication extends Application {
         stage.heightProperty().addListener((obs, oldVal, newVal) -> habitat.setHeight(newVal.doubleValue()));
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void handleSimulationStart() {
+        if(!habitat.isSimulationRunning()) {
+            start = System.currentTimeMillis();
+            timer = new Timer();
+            habitat.startSimulation();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    elapsed = System.currentTimeMillis() - start;
+                    habitat.update(elapsed);
+                }
+            }, 0, 1000);
+        }
+    }
+
+    public void handleSimulationStop() {
+        if(habitat.isSimulationRunning()) {
+            habitat.stopSimulation();
+            timer.cancel();
+        }
     }
 
     public static void main(String[] args) {
