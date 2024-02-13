@@ -173,9 +173,6 @@ public class Habitat
      */
     @Nullable
     private Bee generateRandomBee() {
-        TextField workerBeesIntervalTxt = (TextField)root.getLeft().lookup("#workerBeeIntervalField");
-        TextField dogBeesIntervalTxt = (TextField)root.getLeft().lookup("#dogBeeIntervalField");
-
         double p = MainApplication.instance.random.nextDouble();
         int dogBees = bees.stream().filter(x -> x instanceof DogBee).toArray().length;
 
