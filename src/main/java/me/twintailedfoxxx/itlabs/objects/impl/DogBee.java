@@ -1,7 +1,6 @@
 package me.twintailedfoxxx.itlabs.objects.impl;
 
 import javafx.scene.image.Image;
-import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.Bee;
 import me.twintailedfoxxx.itlabs.objects.IBehaviour;
 
