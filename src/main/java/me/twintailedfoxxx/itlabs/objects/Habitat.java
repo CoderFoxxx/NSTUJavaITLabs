@@ -1,7 +1,6 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -9,32 +8,40 @@ import javafx.scene.text.Text;
 import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Habitat
 {
-    // Контейнер-корень
+    /** Контейнер-корень **/
     private final BorderPane root;
 
+    /** Поле симуляции &ndash; поле в котором будут появляться пчёлы **/
     private final Pane simulationField;
 
-    // Список созданных пчёл
+    /** Список созданных пчёл **/
     private final List<Bee> bees;
 
-    // Ширина поля
+    /** Ширина поля **/
     private double width;
 
-    // Высота поля
+    /** Высота поля **/
     private double height;
 
-    // Состояние симуляции
+    /** Состояние симуляции **/
     private boolean simulationRunning;
 
-    // Видимость текста времени симуляции
+    /** Видимость текста времени симуляции **/
     private boolean isSimulationTimeVisible;
+
+    /** Время начала симуляции **/
+    private long start;
 
 
     /**
@@ -43,7 +50,7 @@ public class Habitat
      * @param width ширина поля
      * @param height высота поля
      */
-    public Habitat(BorderPane root, double width, double height) {
+    public Habitat(@NotNull BorderPane root, double width, double height) {
         this.width = width;
         this.height = height;
         this.root = root;
@@ -61,6 +68,7 @@ public class Habitat
             if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnSeconds() == 0L) {
                 placeBee(bee);
             }
+            updateTime(elapsed);
         }
     }
 
@@ -69,6 +77,15 @@ public class Habitat
      */
     public void startSimulation() {
         simulationRunning = true;
+        start = System.currentTimeMillis();
+        MainApplication.instance.timer = new Timer();
+        MainApplication.instance.timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                MainApplication.instance.elapsed = System.currentTimeMillis() - start;
+                update(MainApplication.instance.elapsed);
+            }
+        }, 0, 1000);
     }
 
     /**
@@ -76,14 +93,14 @@ public class Habitat
      */
     public void stopSimulation() {
         simulationRunning = false;
+        MainApplication.instance.timer.cancel();
         bees.clear();
         simulationField.getChildren().removeIf(x -> x instanceof ImageView);
-        //hintText.setText("Press B to start simulation again, T to show simulation time.");
     }
 
     /**
      * Ширина поля
-     * @return вещественное число - ширина поля
+     * @return вещественное число &ndash; ширина поля
      */
     public double getWidth() {
         return width;
@@ -91,7 +108,7 @@ public class Habitat
 
     /**
      * Высота поля
-     * @return вещественное число - высота поля
+     * @return вещественное число &ndash; высота поля
      */
     public double getHeight() {
         return height;
@@ -135,27 +152,26 @@ public class Habitat
      * @param visibility <code>true</code> &ndash; показать текст<br>
      *                   <code>false</code> &ndash; скрыть текст
      */
-    /*public void setSimulationTimeVisibility(boolean visibility) {
+    public void setSimulationTimeVisibility(boolean visibility) {
         isSimulationTimeVisible = visibility;
-        for(Node text : simulationField.getChildren().filtered(x -> x instanceof Text && x.getId() != null &&
-                x.getId().equalsIgnoreCase("stats_simTime"))) {
-            text.setVisible(visibility);
-        }
-    }*/
+        Text t = (Text)root.getLeft().lookup("#hintText");
+        t.setVisible(visibility);
+    }
 
     /**
      * Видимость текста времени симуляции в сцене
      * @return <code>true</code> &ndash; время видно на сцене<br>
      * <code>false</code> &ndash; время не видно на сцене
      */
-    /*public boolean isSimulationTimeVisible() {
+    public boolean isSimulationTimeVisible() {
         return isSimulationTimeVisible;
-    }*/
+    }
 
     /**
      * Генерация случайной пчелы
      * @return случайно сгенерированный элемент пчелы
      */
+    @Nullable
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
         int dogBees = bees.stream().filter(x -> x instanceof DogBee).toArray().length;
@@ -167,6 +183,12 @@ public class Habitat
         }
 
         return null;
+    }
+
+    private void updateTime(long elapsed) {
+        long elapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsed);
+        Text t = (Text) root.getLeft().lookup("#hintText");
+        t.setText(String.format("Simulation time: %02d:%02d", (elapsedSeconds % 3600) / 60, elapsedSeconds % 60));
     }
 
     /**

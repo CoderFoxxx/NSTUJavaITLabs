@@ -11,14 +11,14 @@
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="me.twintailedfoxxx.itlabs.AppView">
    <left>
-       <VBox fx:id="controlPanel" alignment="CENTER" prefHeight="400.0" prefWidth="148.0" BorderPane.alignment="CENTER">
+       <VBox fx:id="controlPanel" alignment="CENTER" prefHeight="400.0" prefWidth="180.0" BorderPane.alignment="CENTER">
            <opaqueInsets>
                <Insets />
            </opaqueInsets>
-           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false" onMouseClicked="#startSimBtnClick" text="Начать симуляцию" />
-           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" onMouseClicked="#endSimBtnClick" text="Остановить симуляцию" />
+           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false" onMouseClicked="#startSimBtnClick" text="Начать симуляцию (B)" />
+           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" onMouseClicked="#endSimBtnClick" text="Остановить симуляцию (E)" />
            <Button id="showStatsBtn" fx:id="showStatsBtn" mnemonicParsing="false" onMouseClicked="#statsBtnClick" text="Статистика" />
-           <Text id="hintText" fx:id="hintText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+           <Text id="hintText" fx:id="hintText" strokeType="OUTSIDE" strokeWidth="0.0" />
        </VBox>
    </left>
    <right>

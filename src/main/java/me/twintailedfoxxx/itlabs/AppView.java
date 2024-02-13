@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+@SuppressWarnings("unused")
 public class AppView {
     // Контейнер-корень
     @FXML
@@ -26,22 +27,6 @@ public class AppView {
     @FXML
     private Text hintText;
 
-    // Текст, в котором показывается число созданных пчёл
-    @FXML
-    private Text beesSpawnedText;
-
-    // Текст, в котором показывается число рабочих пчёл
-    @FXML
-    private Text workerBeesSpawnedText;
-
-    // Текст, в котором показывается число трутней
-    @FXML
-    private Text dogBeesSpawnedText;
-
-    // Текст, в котором пишется время, затраченное на симуляцию
-    @FXML
-    private Text simulationText;
-
     @FXML
     private Button beginSimBtn;
 
@@ -53,7 +38,7 @@ public class AppView {
 
     @FXML
     private void startSimBtnClick(MouseEvent event) {
-        MainApplication.instance.handleSimulationStart();
+        MainApplication.instance.habitat.startSimulation();
         beginSimBtn.setDisable(true);
         endSimBtn.setDisable(false);
     }
@@ -61,7 +46,7 @@ public class AppView {
     @FXML
     private void endSimBtnClick(MouseEvent event) {
         showStatsDialog();
-        MainApplication.instance.handleSimulationStop();
+        MainApplication.instance.habitat.stopSimulation();
         beginSimBtn.setDisable(false);
         endSimBtn.setDisable(true);
     }
