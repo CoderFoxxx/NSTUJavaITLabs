@@ -1,7 +1,6 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
