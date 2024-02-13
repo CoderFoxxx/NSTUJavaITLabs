@@ -1,15 +1,17 @@
 package me.twintailedfoxxx.itlabs;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
+import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
+
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class AppView {
@@ -37,6 +39,24 @@ public class AppView {
     private Button showStatsBtn;
 
     @FXML
+    private Button showTimeBtn;
+
+    @FXML
+    private Button hideTimeBtn;
+
+    @FXML
+    private TextField workerBeeIntervalField;
+
+    @FXML
+    private TextField dogBeeIntervalField;
+
+    @FXML
+    private ComboBox<Double> workerBeeSpawnPossibilityCmbBox;
+
+    @FXML
+    private ComboBox<Double> dogBeePercentCmbBox;
+
+    @FXML
     private void startSimBtnClick(MouseEvent event) {
         MainApplication.instance.habitat.startSimulation();
         beginSimBtn.setDisable(true);
@@ -45,10 +65,12 @@ public class AppView {
 
     @FXML
     private void endSimBtnClick(MouseEvent event) {
-        showStatsDialog();
-        MainApplication.instance.habitat.stopSimulation();
-        beginSimBtn.setDisable(false);
-        endSimBtn.setDisable(true);
+        ButtonType type = showStatsDialog();
+        if(MainApplication.instance.habitat.isSimulationRunning() && type == ButtonType.OK) {
+            MainApplication.instance.habitat.stopSimulation();
+            beginSimBtn.setDisable(false);
+            endSimBtn.setDisable(true);
+        }
     }
 
     @FXML
@@ -56,14 +78,56 @@ public class AppView {
         showStatsDialog();
     }
 
-    private void showStatsDialog() {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Статистика");
+    @FXML
+    private void showTimeBtnClick(MouseEvent event) {
+        MainApplication.instance.habitat.setSimulationTimeVisibility(true);
+    }
+
+    @FXML
+    private void hideTimeBtnClick(MouseEvent event) {
+        MainApplication.instance.habitat.setSimulationTimeVisibility(false);
+    }
+
+    @FXML
+    private void workerBeeIntervalFieldAction(ActionEvent event) {
+        try {
+            WorkerBee.setSeconds(Integer.parseInt(workerBeeIntervalField.getText()));
+        } catch (NumberFormatException ex) {
+            showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
+        }
+    }
+
+    @FXML
+    private void dogBeeIntervalFieldAction(ActionEvent event) {
+        try {
+            DogBee.setSeconds(Integer.parseInt(dogBeeIntervalField.getText()));
+        } catch (NumberFormatException ex) {
+            showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
+        }
+    }
+
+    @FXML
+    private void workerBeeSpawnPossibilityCmbBoxAction(ActionEvent event) {
+        WorkerBee.setChance(workerBeeSpawnPossibilityCmbBox.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML
+    private void dogBeePercentCmbBoxAction(ActionEvent event) {
+        DogBee.setThreshold(dogBeePercentCmbBox.getSelectionModel().getSelectedItem());
+    }
+
+    private ButtonType showStatsDialog() {
+        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.setHeaderText("Статистика");
         dialog.setContentText(MainApplication.instance.habitat
                 .getStatisticString(MainApplication.instance.elapsed));
-        ButtonType okBtn = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelBtn = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(okBtn, cancelBtn);
-        dialog.showAndWait();
+        Optional<ButtonType> buttonTypeOptional = dialog.showAndWait();
+
+        return buttonTypeOptional.orElse(null);
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
     }
 }

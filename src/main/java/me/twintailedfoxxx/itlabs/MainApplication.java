@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import me.twintailedfoxxx.itlabs.objects.Habitat;
 
@@ -46,9 +47,16 @@ public class MainApplication extends Application {
             }
         });
 
+        Pane simulationArea = (Pane)root.getRight();
         stage.setTitle("Bee Simulator");
-        stage.widthProperty().addListener((obs, oldVal, newVal) -> habitat.setWidth(newVal.doubleValue()));
-        stage.heightProperty().addListener((obs, oldVal, newVal) -> habitat.setHeight(newVal.doubleValue()));
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("W=" + simulationArea.getWidth());
+            habitat.setWidth(simulationArea.getWidth());
+        });
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("H=" + simulationArea.getHeight());
+            habitat.setHeight(simulationArea.getHeight());
+        });
         stage.setScene(scene);
         stage.show();
     }

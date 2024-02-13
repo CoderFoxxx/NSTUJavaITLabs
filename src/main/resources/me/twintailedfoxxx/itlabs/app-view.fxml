@@ -1,27 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.Double?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="me.twintailedfoxxx.itlabs.AppView">
+<BorderPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.twintailedfoxxx.itlabs.AppView">
    <left>
-       <VBox fx:id="controlPanel" alignment="CENTER" prefHeight="400.0" prefWidth="180.0" BorderPane.alignment="CENTER">
+       <VBox fx:id="controlPanel" alignment="CENTER" prefHeight="400.0" prefWidth="271.0" BorderPane.alignment="CENTER">
            <opaqueInsets>
                <Insets />
            </opaqueInsets>
-           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false" onMouseClicked="#startSimBtnClick" text="Начать симуляцию (B)" />
-           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" onMouseClicked="#endSimBtnClick" text="Остановить симуляцию (E)" />
-           <Button id="showStatsBtn" fx:id="showStatsBtn" mnemonicParsing="false" onMouseClicked="#statsBtnClick" text="Статистика" />
            <Text id="hintText" fx:id="hintText" strokeType="OUTSIDE" strokeWidth="0.0" />
+           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false" onMouseClicked="#startSimBtnClick" prefHeight="25.0" prefWidth="260.0" text="Начать симуляцию (B)">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin></Button>
+           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" onMouseClicked="#endSimBtnClick" prefHeight="25.0" prefWidth="260.0" text="Остановить симуляцию (E)">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin></Button>
+           <Button id="showStatsBtn" fx:id="showStatsBtn" mnemonicParsing="false" onMouseClicked="#statsBtnClick" prefHeight="25.0" prefWidth="260.0" text="Статистика">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin></Button>
+           <Button id="showTimeBtn" fx:id="showTimeBtn" mnemonicParsing="false" onMouseClicked="#showTimeBtnClick" prefWidth="260.0" text="Показать время">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin></Button>
+           <Button id="hideTimeBtn" fx:id="hideTimeBtn" mnemonicParsing="false" onMouseClicked="#hideTimeBtnClick" prefWidth="260.0" text="Скрыть время">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin></Button>
+         <TextField id="workerBeeIntervalField" fx:id="workerBeeIntervalField" maxWidth="260.0" onAction="#workerBeeIntervalFieldAction" promptText="Период появления рабочей пчелы">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin>
+         </TextField>
+         <TextField id="dogBeeIntervalField" fx:id="dogBeeIntervalField" maxWidth="260.0" onAction="#dogBeeIntervalFieldAction" promptText="Период появления трутней">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin>
+         </TextField>
+         <ComboBox id="workerBeeSpawnPossibilityCmbBox" fx:id="workerBeeSpawnPossibilityCmbBox" onAction="#workerBeeSpawnPossibilityCmbBoxAction" prefHeight="25.0" prefWidth="266.0" promptText="Вероятность появления рабочих пчел">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin>
+             <items>
+                 <FXCollections fx:factory="observableArrayList">
+                     <Double fx:value="0.1" />
+                     <Double fx:value="0.2" />
+                     <Double fx:value="0.3" />
+                     <Double fx:value="0.4" />
+                     <Double fx:value="0.5" />
+                     <Double fx:value="0.6" />
+                     <Double fx:value="0.7" />
+                     <Double fx:value="0.8" />
+                     <Double fx:value="0.9" />
+                 </FXCollections>
+             </items>
+         </ComboBox>
+         <ComboBox id="dogBeePercentCmbBox" fx:id="dogBeePercentCmbBox" onAction="#dogBeePercentCmbBoxAction" prefWidth="266.0" promptText="\% трутней от всего числа пчел для их появления">
+            <VBox.margin>
+               <Insets bottom="5.0" />
+            </VBox.margin>
+             <items>
+                 <FXCollections fx:factory="observableArrayList">
+                     <Double fx:value="0.1" />
+                     <Double fx:value="0.2" />
+                     <Double fx:value="0.3" />
+                     <Double fx:value="0.4" />
+                     <Double fx:value="0.5" />
+                     <Double fx:value="0.6" />
+                     <Double fx:value="0.7" />
+                     <Double fx:value="0.8" />
+                     <Double fx:value="0.9" />
+                 </FXCollections>
+             </items>
+         </ComboBox>
        </VBox>
    </left>
    <right>
-      <Pane id="simulationField" fx:id="simulationField" prefHeight="400.0" prefWidth="1200.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER" />
+      <Pane id="simulationField" fx:id="simulationField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1200.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER" />
    </right>
 </BorderPane>

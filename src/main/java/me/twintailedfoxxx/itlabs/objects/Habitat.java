@@ -1,6 +1,7 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -42,7 +43,6 @@ public class Habitat
 
     /** Время начала симуляции **/
     private long start;
-
 
     /**
      * Конструктор окружения
@@ -173,12 +173,15 @@ public class Habitat
      */
     @Nullable
     private Bee generateRandomBee() {
+        TextField workerBeesIntervalTxt = (TextField)root.getLeft().lookup("#workerBeeIntervalField");
+        TextField dogBeesIntervalTxt = (TextField)root.getLeft().lookup("#dogBeeIntervalField");
+
         double p = MainApplication.instance.random.nextDouble();
         int dogBees = bees.stream().filter(x -> x instanceof DogBee).toArray().length;
 
-        if((double)dogBees / bees.size() <= 0.2) {
+        if((double)dogBees / bees.size() <= DogBee.getThreshold()) {
             return new DogBee();
-        } else if(p <= 0.9) {
+        } else if(p <= WorkerBee.getChance()) {
             return new WorkerBee();
         }
 
