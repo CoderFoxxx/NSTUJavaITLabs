@@ -12,7 +12,7 @@ import java.util.Objects;
 public class DogBee extends Bee implements IBehaviour {
     @Override
     public int getSpawnSeconds() {
-        return 15;
+        return 5;
     }
 
     @Override
