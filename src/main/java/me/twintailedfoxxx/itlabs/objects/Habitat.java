@@ -97,6 +97,10 @@ public class Habitat
         simulationField.getChildren().removeIf(x -> x instanceof ImageView);
     }
 
+    public Pane getSimulationField() {
+        return simulationField;
+    }
+
     /**
      * Ширина поля
      * @return вещественное число &ndash; ширина поля
