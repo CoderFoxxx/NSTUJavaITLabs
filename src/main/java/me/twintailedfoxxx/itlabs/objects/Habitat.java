@@ -14,15 +14,14 @@ import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Habitat
 {
     // Контейнер-корень
     private final Pane root;
-
-    //Контейнер, содержащий статистику
-    private final Pane statsPane;
 
     // Текст-подсказка
     private final Text hintText;
@@ -56,6 +55,7 @@ public class Habitat
 
     // Видимость текста времени симуляции
     private boolean isSimulationTimeVisible;
+    private long start;
 
 
     /**
@@ -65,10 +65,10 @@ public class Habitat
      * @param height высота поля
      */
     public Habitat(Pane root, double width, double height) {
+        Pane statsPane = new Pane();
         this.width = width;
         this.height = height;
         this.root = root;
-        this.statsPane = new Pane();
         this.bees = new Bee[1024];
 
         hintText = new Text("Press B to begin the simulation, T to show simulation time.");
@@ -128,6 +128,15 @@ public class Habitat
      */
     public void startSimulation() {
         simulationRunning = true;
+        start = System.currentTimeMillis();
+        MainApplication.instance.timer = new Timer();
+        MainApplication.instance.timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                MainApplication.instance.elapsed = System.currentTimeMillis() - start;
+                update(MainApplication.instance.elapsed);
+            }
+        }, 0, 1000);
         hintText.setText("Press E to stop simulation, T to show simulation time.");
     }
 
@@ -136,7 +145,7 @@ public class Habitat
      */
     public void stopSimulation() {
         simulationRunning = false;
-        statsPane.setVisible(true);
+        MainApplication.instance.timer.cancel();
         for(int i = 0; i < beesSpawned; i++) {
             bees[i] = null;
         }

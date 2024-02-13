@@ -8,18 +8,16 @@ import me.twintailedfoxxx.itlabs.objects.Habitat;
 
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainApplication extends Application {
     public static MainApplication instance;
     public Random random;
     public Timer timer;
     public Habitat habitat;
-    private long start;
+    public long elapsed;
 
     @Override
     public void start(Stage stage) {
-        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("hello-view.fxml"));
         Scene scene;
         BorderPane root = new BorderPane();
 
@@ -31,21 +29,12 @@ public class MainApplication extends Application {
             switch (event.getCode()) {
                 case B:
                     if(!habitat.isSimulationRunning()) {
-                        start = System.currentTimeMillis();
-                        timer = new Timer();
                         habitat.startSimulation();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                habitat.update(System.currentTimeMillis() - start);
-                            }
-                        }, 0, 1000);
                     }
                     break;
                 case E:
                     if(habitat.isSimulationRunning()) {
                         habitat.stopSimulation();
-                        timer.cancel();
                     }
                     break;
                 case T:
