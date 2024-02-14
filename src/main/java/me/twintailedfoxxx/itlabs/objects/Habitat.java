@@ -23,6 +23,8 @@ public class Habitat
     // Контейнер-корень
     private final Pane root;
 
+    private final Pane statsPane;
+
     // Текст-подсказка
     private final Text hintText;
 
@@ -65,7 +67,7 @@ public class Habitat
      * @param height высота поля
      */
     public Habitat(Pane root, double width, double height) {
-        Pane statsPane = new Pane();
+        this.statsPane = new Pane();
         this.width = width;
         this.height = height;
         this.root = root;
@@ -149,8 +151,10 @@ public class Habitat
         for(int i = 0; i < beesSpawned; i++) {
             bees[i] = null;
         }
+        beesSpawned = 0;
         root.getChildren().removeIf(x -> x instanceof ImageView);
         hintText.setText("Press B to start simulation again, T to show simulation time.");
+        statsPane.setVisible(true);
     }
 
     /**
