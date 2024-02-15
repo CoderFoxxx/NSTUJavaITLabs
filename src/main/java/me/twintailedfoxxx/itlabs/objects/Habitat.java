@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import me.twintailedfoxxx.itlabs.MainApplication;
-import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
+import me.twintailedfoxxx.itlabs.objects.impl.QueenBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -177,10 +177,10 @@ public class Habitat
     @Nullable
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
-        int dogBees = bees.stream().filter(x -> x instanceof DogBee).toArray().length;
+        int queenBees = bees.stream().filter(x -> x instanceof QueenBee).toArray().length;
 
-        if((double)dogBees / bees.size() <= DogBee.getThreshold()) {
-            return new DogBee();
+        if((double)queenBees / bees.size() <= QueenBee.getThreshold()) {
+            return new QueenBee();
         } else if(p <= WorkerBee.getChance()) {
             return new WorkerBee();
         }
@@ -217,7 +217,7 @@ public class Habitat
         long elapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsed);
         return "Bees spawned: " + bees.size() +
                 "\nWorker bees spawned: " + bees.stream().filter(x -> x instanceof WorkerBee).toList().size() +
-                "\nDog bees spawned: " + bees.stream().filter(x -> x instanceof DogBee).toList().size() +
+                "\nDog bees spawned: " + bees.stream().filter(x -> x instanceof QueenBee).toList().size() +
                 String.format("\nSimulation time: %02d:%02d", (elapsedSeconds % 3600) / 60, elapsedSeconds % 60);
     }
 }

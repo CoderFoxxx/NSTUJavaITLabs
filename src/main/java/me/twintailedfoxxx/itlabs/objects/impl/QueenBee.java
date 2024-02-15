@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Трутень
  */
-public class DogBee extends Bee implements IBehaviour {
+public class QueenBee extends Bee implements IBehaviour {
     private static int seconds = 5;
     private static double threshold = 0.2;
 
@@ -20,7 +20,7 @@ public class DogBee extends Bee implements IBehaviour {
 
     @Override
     public Image getImage() {
-        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/dog_bee.png")));
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png")));
     }
 
     public static double getThreshold() {
@@ -28,10 +28,10 @@ public class DogBee extends Bee implements IBehaviour {
     }
 
     public static void setThreshold(double threshold) {
-        DogBee.threshold = threshold;
+        QueenBee.threshold = threshold;
     }
 
     public static void setSeconds(int seconds) {
-        DogBee.seconds = seconds;
+        QueenBee.seconds = seconds;
     }
 }

@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
+import me.twintailedfoxxx.itlabs.objects.impl.QueenBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 
 import java.util.Optional;
@@ -100,7 +100,7 @@ public class AppView {
     @FXML
     private void dogBeeIntervalFieldAction(ActionEvent event) {
         try {
-            DogBee.setSeconds(Integer.parseInt(dogBeeIntervalField.getText()));
+            QueenBee.setSeconds(Integer.parseInt(dogBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
             showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
         }
@@ -113,7 +113,7 @@ public class AppView {
 
     @FXML
     private void dogBeePercentCmbBoxAction(ActionEvent event) {
-        DogBee.setThreshold(dogBeePercentCmbBox.getSelectionModel().getSelectedItem());
+        QueenBee.setThreshold(dogBeePercentCmbBox.getSelectionModel().getSelectedItem());
     }
 
     private ButtonType showStatsDialog() {
