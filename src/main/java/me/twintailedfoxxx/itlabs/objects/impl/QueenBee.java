@@ -10,17 +10,12 @@ import java.util.Objects;
  * Трутень
  */
 public class QueenBee extends Bee implements IBehaviour {
-    private static int seconds = 5;
+    private static int delay = 5;
     private static double threshold = 0.2;
 
-    @Override
-    public int getSpawnSeconds() {
-        return seconds;
-    }
-
-    @Override
-    public Image getImage() {
-        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png")));
+    public QueenBee() {
+        setSpawnDelay(delay);
+        setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png"))));
     }
 
     public static double getThreshold() {
@@ -31,7 +26,7 @@ public class QueenBee extends Bee implements IBehaviour {
         QueenBee.threshold = threshold;
     }
 
-    public static void setSeconds(int seconds) {
-        QueenBee.seconds = seconds;
+    public static void setDelay(int delay) {
+        QueenBee.delay = delay;
     }
 }

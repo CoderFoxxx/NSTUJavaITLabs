@@ -64,7 +64,7 @@ public class Habitat
     public void update(long elapsed) {
         if(simulationRunning) {
             Bee bee = generateRandomBee();
-            if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnSeconds() == 0L) {
+            if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnDelay() == 0L) {
                 placeBee(bee);
             }
             updateTime(elapsed);

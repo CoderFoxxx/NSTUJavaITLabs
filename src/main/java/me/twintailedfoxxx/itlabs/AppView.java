@@ -91,7 +91,7 @@ public class AppView {
     @FXML
     private void workerBeeIntervalFieldAction(ActionEvent event) {
         try {
-            WorkerBee.setSeconds(Integer.parseInt(workerBeeIntervalField.getText()));
+            WorkerBee.setDelay(Integer.parseInt(workerBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
             showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
         }
@@ -100,7 +100,7 @@ public class AppView {
     @FXML
     private void dogBeeIntervalFieldAction(ActionEvent event) {
         try {
-            QueenBee.setSeconds(Integer.parseInt(dogBeeIntervalField.getText()));
+            QueenBee.setDelay(Integer.parseInt(dogBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
             showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
         }
