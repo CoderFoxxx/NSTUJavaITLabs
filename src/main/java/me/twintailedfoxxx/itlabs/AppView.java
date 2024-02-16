@@ -129,5 +129,6 @@ public class AppView {
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText(message);
+        alert.showAndWait();
     }
 }
