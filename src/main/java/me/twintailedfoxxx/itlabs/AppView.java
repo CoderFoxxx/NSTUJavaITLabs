@@ -48,23 +48,23 @@ public class AppView {
     private TextField workerBeeIntervalField;
 
     @FXML
-    private TextField dogBeeIntervalField;
+    private TextField queenBeeIntervalField;
 
     @FXML
     private ComboBox<Double> workerBeeSpawnPossibilityCmbBox;
 
     @FXML
-    private ComboBox<Double> dogBeePercentCmbBox;
+    private ComboBox<Double> queenBeePercentCmbBox;
 
     @FXML
-    private void startSimBtnClick(MouseEvent event) {
+    private void onStartSimBtnClick(MouseEvent event) {
         MainApplication.instance.habitat.startSimulation();
         beginSimBtn.setDisable(true);
         endSimBtn.setDisable(false);
     }
 
     @FXML
-    private void endSimBtnClick(MouseEvent event) {
+    private void onEndSimBtnClick(MouseEvent event) {
         ButtonType type = showStatsDialog();
         if(MainApplication.instance.habitat.isSimulationRunning() && type == ButtonType.OK) {
             MainApplication.instance.habitat.stopSimulation();
@@ -74,22 +74,22 @@ public class AppView {
     }
 
     @FXML
-    private void statsBtnClick(MouseEvent event) {
+    private void onStatsBtnClick(MouseEvent event) {
         showStatsDialog();
     }
 
     @FXML
-    private void showTimeBtnClick(MouseEvent event) {
+    private void onShowTimeBtnClick(MouseEvent event) {
         MainApplication.instance.habitat.setSimulationTimeVisibility(true);
     }
 
     @FXML
-    private void hideTimeBtnClick(MouseEvent event) {
+    private void onHideTimeBtnClick(MouseEvent event) {
         MainApplication.instance.habitat.setSimulationTimeVisibility(false);
     }
 
     @FXML
-    private void workerBeeIntervalFieldAction(ActionEvent event) {
+    private void onWorkerBeeIntervalFieldAction(ActionEvent event) {
         try {
             WorkerBee.setDelay(Integer.parseInt(workerBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
@@ -98,22 +98,22 @@ public class AppView {
     }
 
     @FXML
-    private void dogBeeIntervalFieldAction(ActionEvent event) {
+    private void onQueenBeeIntervalFieldAction(ActionEvent event) {
         try {
-            QueenBee.setDelay(Integer.parseInt(dogBeeIntervalField.getText()));
+            QueenBee.setDelay(Integer.parseInt(queenBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
             showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
         }
     }
 
     @FXML
-    private void workerBeeSpawnPossibilityCmbBoxAction(ActionEvent event) {
+    private void onWorkerBeeSpawnPossibilityCmbBoxAction(ActionEvent event) {
         WorkerBee.setChance(workerBeeSpawnPossibilityCmbBox.getSelectionModel().getSelectedItem());
     }
 
     @FXML
-    private void dogBeePercentCmbBoxAction(ActionEvent event) {
-        QueenBee.setThreshold(dogBeePercentCmbBox.getSelectionModel().getSelectedItem());
+    private void onQueenBeePercentCmbBoxAction(ActionEvent event) {
+        QueenBee.setThreshold(queenBeePercentCmbBox.getSelectionModel().getSelectedItem());
     }
 
     private ButtonType showStatsDialog() {
