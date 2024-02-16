@@ -9,7 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import me.twintailedfoxxx.itlabs.MainApplication;
-import me.twintailedfoxxx.itlabs.objects.impl.DogBee;
+import me.twintailedfoxxx.itlabs.objects.impl.QueenBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 
 import java.time.Duration;
@@ -35,7 +35,7 @@ public class Habitat
     private final Text workerBeesSpawnedText;
 
     // Текст, в котором показывается число трутней
-    private final Text dogBeesSpawnedText;
+    private final Text queenBeesSpawnedText;
 
     // Текст, в котором пишется время, затраченное на симуляцию
     private final Text simulationText;
@@ -89,22 +89,22 @@ public class Habitat
         workerBeesSpawnedText.setTextAlignment(TextAlignment.LEFT);
         workerBeesSpawnedText.setY(beesSpawnedText.getY() + 15);
 
-        dogBeesSpawnedText = new Text("Dog Bees spawned:");
-        dogBeesSpawnedText.setFont(Font.font("Courier New", 20));
-        dogBeesSpawnedText.setStroke(Color.VIOLET);
-        dogBeesSpawnedText.setTextAlignment(TextAlignment.LEFT);
-        dogBeesSpawnedText.setY(workerBeesSpawnedText.getY() + 15);
+        queenBeesSpawnedText = new Text("Queen Bees spawned:");
+        queenBeesSpawnedText.setFont(Font.font("Courier New", 20));
+        queenBeesSpawnedText.setStroke(Color.VIOLET);
+        queenBeesSpawnedText.setTextAlignment(TextAlignment.LEFT);
+        queenBeesSpawnedText.setY(workerBeesSpawnedText.getY() + 15);
 
         simulationText = new Text("Simulation time:");
         simulationText.setId("stats_simTime");
         simulationText.setFont(Font.font("Times New Roman", 20));
         simulationText.setStroke(Color.DARKGREY);
         simulationText.setTextAlignment(TextAlignment.CENTER);
-        simulationText.setY(dogBeesSpawnedText.getY() + 15);
+        simulationText.setY(queenBeesSpawnedText.getY() + 15);
 
         hintText.setY(simulationText.getY() + 15);
 
-        statsPane.getChildren().addAll(beesSpawnedText, workerBeesSpawnedText, dogBeesSpawnedText);
+        statsPane.getChildren().addAll(beesSpawnedText, workerBeesSpawnedText, queenBeesSpawnedText);
         root.getChildren().addAll(statsPane, simulationText, hintText);
 
         simulationText.setVisible(false);
@@ -118,7 +118,7 @@ public class Habitat
     public void update(long elapsed) {
         if(simulationRunning) {
             Bee bee = generateRandomBee();
-            if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnSeconds() == 0L) {
+            if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnDelay() == 0L) {
                 placeBee(bee);
             }
             updateText(elapsed);
@@ -238,7 +238,7 @@ public class Habitat
         beesSpawnedText.setText("Bees spawned: " + beesSpawned);
         workerBeesSpawnedText.setText("Worker bees spawned: " + Arrays.stream(bees).filter(x -> x instanceof WorkerBee)
                 .toArray().length);
-        dogBeesSpawnedText.setText("Dog bees spawned: " + Arrays.stream(bees).filter(x -> x instanceof DogBee)
+        queenBeesSpawnedText.setText("Queen bees spawned: " + Arrays.stream(bees).filter(x -> x instanceof QueenBee)
                 .toArray().length);
         simulationText.setText(String.format("Simulation time: %02d:%02d", (elapsedSeconds % 3600) / 60,
                 elapsedSeconds % 60));
@@ -250,11 +250,11 @@ public class Habitat
      */
     private Bee generateRandomBee() {
         double p = MainApplication.instance.random.nextDouble();
-        int dogBees = Arrays.stream(bees).filter(x -> x instanceof DogBee).toArray().length;
+        int queenBees = Arrays.stream(bees).filter(x -> x instanceof QueenBee).toArray().length;
 
-        if((double)dogBees / beesSpawned <= 0.2) {
-            return new DogBee();
-        } else if(p <= 0.9) {
+        if((double)queenBees / beesSpawned <= QueenBee.getThreshold()) {
+            return new QueenBee();
+        } else if(p <= WorkerBee.getChance()) {
             return new WorkerBee();
         }
 
