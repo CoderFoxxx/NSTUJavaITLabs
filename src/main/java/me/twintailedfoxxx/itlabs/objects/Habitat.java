@@ -1,7 +1,6 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
