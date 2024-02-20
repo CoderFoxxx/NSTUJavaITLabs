@@ -213,9 +213,9 @@ public class Habitat
      */
     public void setSimulationTimeVisibility(boolean visibility) {
         isSimulationTimeVisible = visibility;
-        for(Node text : root.getChildren().filtered(x -> x instanceof Text && x.getId() != null &&
-                x.getId().equalsIgnoreCase("stats_simTime"))) {
-            text.setVisible(visibility);
+        Text t = (Text)root.lookup("#stats_simTime");
+        if(t != null) {
+            t.setVisible(visibility);
         }
     }
 
