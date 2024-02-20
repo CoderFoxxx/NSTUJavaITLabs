@@ -14,7 +14,7 @@ import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
-public class AppView {
+public class AppController {
     // Контейнер-корень
     @FXML
     private BorderPane root;
