@@ -179,7 +179,7 @@ public class Habitat
         double p = MainApplication.instance.random.nextDouble();
         int queenBees = bees.stream().filter(x -> x instanceof QueenBee).toArray().length;
 
-        if((double)queenBees / bees.size() <= QueenBee.getThreshold()) {
+        if ((double) queenBees / bees.size() < QueenBee.getThreshold()) {
             return new QueenBee();
         } else if(p <= WorkerBee.getChance()) {
             return new WorkerBee();
