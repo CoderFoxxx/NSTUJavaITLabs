@@ -19,7 +19,9 @@
             <VBox.margin>
                <Insets bottom="5.0" />
             </VBox.margin></Button>
-           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" onMouseClicked="#onEndSimBtnClick" prefHeight="25.0" prefWidth="260.0" text="Остановить симуляцию (E)">
+           <Button id="endSimBtn" fx:id="endSimBtn" mnemonicParsing="false" disable="true"
+                   onMouseClicked="#onEndSimBtnClick" prefHeight="25.0" prefWidth="260.0"
+                   text="Остановить симуляцию (E)">
             <VBox.margin>
                <Insets bottom="5.0" />
             </VBox.margin></Button>

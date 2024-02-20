@@ -59,18 +59,11 @@ public class AppController {
     @FXML
     private void onStartSimBtnClick(MouseEvent event) {
         MainApplication.instance.habitat.startSimulation();
-        beginSimBtn.setDisable(true);
-        endSimBtn.setDisable(false);
     }
 
     @FXML
     private void onEndSimBtnClick(MouseEvent event) {
-        ButtonType type = showStatsDialog();
-        if(MainApplication.instance.habitat.isSimulationRunning() && type == ButtonType.OK) {
-            MainApplication.instance.habitat.stopSimulation();
-            beginSimBtn.setDisable(false);
-            endSimBtn.setDisable(true);
-        }
+        MainApplication.instance.habitat.stopSimulation();
     }
 
     @FXML
@@ -116,7 +109,7 @@ public class AppController {
         QueenBee.setThreshold(queenBeePercentCmbBox.getSelectionModel().getSelectedItem());
     }
 
-    private ButtonType showStatsDialog() {
+    public static ButtonType showStatsDialog() {
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.setHeaderText("Статистика");
         dialog.setContentText(MainApplication.instance.habitat

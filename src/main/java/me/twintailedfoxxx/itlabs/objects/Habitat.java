@@ -1,10 +1,13 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import me.twintailedfoxxx.itlabs.AppController;
 import me.twintailedfoxxx.itlabs.MainApplication;
 import me.twintailedfoxxx.itlabs.objects.impl.QueenBee;
 import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
@@ -85,16 +88,21 @@ public class Habitat
                 update(MainApplication.instance.elapsed);
             }
         }, 0, 1000);
+        toggleSimulationButtons();
     }
 
     /**
      * Метод, заканчивающий симуляцию
      */
     public void stopSimulation() {
-        simulationRunning = false;
-        MainApplication.instance.timer.cancel();
-        bees.clear();
-        simulationField.getChildren().removeIf(x -> x instanceof ImageView);
+        ButtonType btnType = AppController.showStatsDialog();
+        if (simulationRunning && btnType == ButtonType.OK) {
+            simulationRunning = false;
+            MainApplication.instance.timer.cancel();
+            bees.clear();
+            simulationField.getChildren().removeIf(x -> x instanceof ImageView);
+            toggleSimulationButtons();
+        }
     }
 
     public Pane getSimulationField() {
@@ -219,5 +227,13 @@ public class Habitat
                 "\nWorker bees spawned: " + bees.stream().filter(x -> x instanceof WorkerBee).toList().size() +
                 "\nDog bees spawned: " + bees.stream().filter(x -> x instanceof QueenBee).toList().size() +
                 String.format("\nSimulation time: %02d:%02d", (elapsedSeconds % 3600) / 60, elapsedSeconds % 60);
+    }
+
+    private void toggleSimulationButtons() {
+        Button startBtn = (Button) root.lookup("#beginSimBtn");
+        Button endBtn = (Button) root.lookup("#endSimBtn");
+
+        startBtn.setDisable(simulationRunning);
+        endBtn.setDisable(!simulationRunning);
     }
 }
