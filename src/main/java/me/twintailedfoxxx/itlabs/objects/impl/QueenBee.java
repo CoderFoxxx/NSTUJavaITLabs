@@ -29,4 +29,8 @@ public class QueenBee extends Bee implements IBehaviour {
     public static void setDelay(int delay) {
         QueenBee.delay = delay;
     }
+
+    public static int getDelay() {
+        return delay;
+    }
 }

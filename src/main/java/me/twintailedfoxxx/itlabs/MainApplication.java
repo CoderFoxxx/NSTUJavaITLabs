@@ -3,9 +3,13 @@ package me.twintailedfoxxx.itlabs;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import me.twintailedfoxxx.itlabs.objects.Habitat;
+import me.twintailedfoxxx.itlabs.objects.impl.QueenBee;
+import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -51,9 +55,20 @@ public class MainApplication extends Application {
         stage.heightProperty().addListener((obs, oldVal, newVal) -> habitat.setHeight(habitat.getSimulationField().getHeight()));
         stage.setScene(scene);
         stage.show();
+        setDefaultValues();
     }
 
     public static void main(String[] args) {
         launch();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setDefaultValues() {
+        ((TextField) habitat.getRoot().getLeft().lookup("#workerBeeIntervalField")).setText("2");
+        ((TextField) habitat.getRoot().getLeft().lookup("#queenBeeIntervalField")).setText("5");
+        ComboBox<Double> workerBeePossibilityBox = (ComboBox<Double>) habitat.getRoot().getLeft().lookup("#workerBeeSpawnPossibilityCmbBox");
+        ComboBox<Double> queenBeePercentBox = (ComboBox<Double>) habitat.getRoot().getLeft().lookup("#queenBeePercentCmbBox");
+        workerBeePossibilityBox.getSelectionModel().select(workerBeePossibilityBox.getItems().indexOf(WorkerBee.getChance()));
+        queenBeePercentBox.getSelectionModel().select(queenBeePercentBox.getItems().indexOf(QueenBee.getThreshold()));
     }
 }

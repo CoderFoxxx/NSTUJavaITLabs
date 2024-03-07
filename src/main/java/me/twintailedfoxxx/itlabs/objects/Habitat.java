@@ -1,8 +1,7 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -70,7 +69,9 @@ public class Habitat
             if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnDelay() == 0L) {
                 placeBee(bee);
             }
+
             updateTime(elapsed);
+            AppController.updateDialogBoxText();
         }
     }
 
@@ -78,31 +79,53 @@ public class Habitat
      * Метод, начинающий симуляцию
      */
     public void startSimulation() {
-        simulationRunning = true;
-        start = System.currentTimeMillis();
-        MainApplication.instance.timer = new Timer();
-        MainApplication.instance.timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                MainApplication.instance.elapsed = System.currentTimeMillis() - start;
-                update(MainApplication.instance.elapsed);
+        try {
+            if (setSimulationValues()) {
+                simulationRunning = true;
+                start = System.currentTimeMillis();
+                MainApplication.instance.timer = new Timer();
+                MainApplication.instance.timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        MainApplication.instance.elapsed = System.currentTimeMillis() - start;
+                        update(MainApplication.instance.elapsed);
+                    }
+                }, 0, 1000);
+                toggleSimulationButtons();
+                toggleFields();
             }
-        }, 0, 1000);
-        toggleSimulationButtons();
+        } catch (IllegalArgumentException ex) {
+            String errorFieldId = ex.getMessage().split(":")[1].replace(" ", "");
+            TextField errorField = (TextField) root.getLeft().lookup("#" + errorFieldId);
+            AppController.showInputError(errorField.getPromptText());
+            errorField.setText(String.valueOf(errorFieldId.toLowerCase().contains("queen") ? QueenBee.getDelay() :
+                    WorkerBee.getDelay()));
+        }
     }
 
     /**
      * Метод, заканчивающий симуляцию
      */
     public void stopSimulation() {
-        ButtonType btnType = AppController.showStatsDialog();
-        if (simulationRunning && btnType == ButtonType.OK) {
+        CheckBox box = (CheckBox) root.getLeft().lookup("#showStatsChkBox");
+        ButtonType type = ButtonType.OK;
+
+        if (box.isSelected()) {
+            type = AppController.showStatsDialog();
+        }
+
+        if (simulationRunning && type == ButtonType.OK) {
             simulationRunning = false;
             MainApplication.instance.timer.cancel();
             bees.clear();
             simulationField.getChildren().removeIf(x -> x instanceof ImageView);
             toggleSimulationButtons();
+            toggleFields();
         }
+    }
+
+    public BorderPane getRoot() {
+        return root;
     }
 
     public Pane getSimulationField() {
@@ -232,8 +255,63 @@ public class Habitat
     private void toggleSimulationButtons() {
         Button startBtn = (Button) root.lookup("#beginSimBtn");
         Button endBtn = (Button) root.lookup("#endSimBtn");
+        MenuBar menuBar = (MenuBar) root.lookup("#menuBar");
+        Menu menu = menuBar.getMenus().get(0);
 
         startBtn.setDisable(simulationRunning);
         endBtn.setDisable(!simulationRunning);
+        menu.getItems().stream().filter(x -> x.getId().equalsIgnoreCase("startSimMenuItem")).findAny()
+                .ifPresent(x -> x.setDisable(simulationRunning));
+        menu.getItems().stream().filter(x -> x.getId().equalsIgnoreCase("stopSimMenuItem")).findAny()
+                .ifPresent(x -> x.setDisable(!simulationRunning));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void toggleFields() {
+        TextField workerIntervalField = (TextField) root.getLeft().lookup("#workerBeeIntervalField");
+        TextField queenBeeIntervalField = (TextField) root.getLeft().lookup("#queenBeeIntervalField");
+        ComboBox<Double> workerBeePossibility = (ComboBox<Double>) root.getLeft()
+                .lookup("#workerBeeSpawnPossibilityCmbBox");
+        ComboBox<Double> queenBeePercent = (ComboBox<Double>) root.getLeft().lookup("#queenBeePercentCmbBox");
+
+        workerIntervalField.setDisable(simulationRunning);
+        queenBeeIntervalField.setDisable(simulationRunning);
+        workerBeePossibility.setDisable(simulationRunning);
+        queenBeePercent.setDisable(simulationRunning);
+    }
+
+    private boolean setSimulationValues() throws IllegalArgumentException {
+        TextField errorField = null;
+        try {
+            TextField workerIntervalField = (TextField) root.getLeft().lookup("#workerBeeIntervalField");
+            TextField queenBeeIntervalField = (TextField) root.getLeft().lookup("#queenBeeIntervalField");
+
+            errorField = workerIntervalField;
+            int workerBeeInterval = Integer.parseInt(workerIntervalField.getText());
+            errorField = queenBeeIntervalField;
+            int queenBeeInterval = Integer.parseInt(queenBeeIntervalField.getText());
+
+            errorField = workerIntervalField;
+            if (workerBeeInterval > 0) {
+                WorkerBee.setDelay(workerBeeInterval);
+            } else {
+                throw new IllegalArgumentException("Interval must be a positive number: " + errorField.getId());
+            }
+
+            errorField = queenBeeIntervalField;
+            if (queenBeeInterval > 0) {
+                QueenBee.setDelay(queenBeeInterval);
+            } else {
+                throw new IllegalArgumentException("Interval must be a positive number: " + errorField.getId());
+            }
+
+            return true;
+        } catch (NumberFormatException ex) {
+            assert errorField != null;
+            AppController.showInputError(errorField.getPromptText());
+            errorField.setText(String.valueOf(errorField.getId().toLowerCase().contains("queen") ? QueenBee.getDelay() :
+                    WorkerBee.getDelay()));
+            return false;
+        }
     }
 }

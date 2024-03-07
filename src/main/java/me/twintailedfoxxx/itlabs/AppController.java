@@ -1,5 +1,6 @@
 package me.twintailedfoxxx.itlabs;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -36,13 +37,13 @@ public class AppController {
     private Button endSimBtn;
 
     @FXML
-    private Button showStatsBtn;
+    private CheckBox showStatsChkBox;
 
     @FXML
-    private Button showTimeBtn;
+    private RadioButton showTimeRadioBtn;
 
     @FXML
-    private Button hideTimeBtn;
+    private RadioButton hideTimeRadioBtn;
 
     @FXML
     private TextField workerBeeIntervalField;
@@ -55,6 +56,7 @@ public class AppController {
 
     @FXML
     private ComboBox<Double> queenBeePercentCmbBox;
+    private static Alert statsDialog;
 
     @FXML
     private void onStartSimBtnClick(MouseEvent event) {
@@ -67,17 +69,30 @@ public class AppController {
     }
 
     @FXML
-    private void onStatsBtnClick(MouseEvent event) {
-        showStatsDialog();
-    }
+    private void onShowTimeRadioBtnClick(ActionEvent event) {
+        if (hideTimeRadioBtn.isSelected()) {
+            hideTimeRadioBtn.setSelected(false);
+        }
 
-    @FXML
-    private void onShowTimeBtnClick(MouseEvent event) {
+        MenuBar menuBar = (MenuBar) MainApplication.instance.habitat.getRoot().lookup("#menuBar");
+        Menu menu = menuBar.getMenus().get(0);
+        menu.getItems().stream().filter(x -> x instanceof CheckMenuItem && x.getId().equalsIgnoreCase("showTimeMenuItem")).findAny()
+                .ifPresent(x -> ((CheckMenuItem) x).setSelected(true));
+
         MainApplication.instance.habitat.setSimulationTimeVisibility(true);
     }
 
     @FXML
-    private void onHideTimeBtnClick(MouseEvent event) {
+    private void onHideTimeRadioBtnClick(ActionEvent event) {
+        if (showTimeRadioBtn.isSelected()) {
+            showTimeRadioBtn.setSelected(false);
+        }
+
+        MenuBar menuBar = (MenuBar) MainApplication.instance.habitat.getRoot().lookup("#menuBar");
+        Menu menu = menuBar.getMenus().get(0);
+        menu.getItems().stream().filter(x -> x instanceof CheckMenuItem && x.getId().equalsIgnoreCase("showTimeMenuItem")).findAny()
+                .ifPresent(x -> ((CheckMenuItem) x).setSelected(false));
+
         MainApplication.instance.habitat.setSimulationTimeVisibility(false);
     }
 
@@ -86,7 +101,8 @@ public class AppController {
         try {
             WorkerBee.setDelay(Integer.parseInt(workerBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
-            showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
+            showInputError(((TextField) event.getSource()).getPromptText());
+            workerBeeIntervalField.setText(String.valueOf(WorkerBee.getDelay()));
         }
     }
 
@@ -95,7 +111,8 @@ public class AppController {
         try {
             QueenBee.setDelay(Integer.parseInt(queenBeeIntervalField.getText()));
         } catch (NumberFormatException ex) {
-            showError("Вы ввели некорректные данные. Введите корректные данные в поле (целое число) и попробуйте ещё раз.");
+            showInputError(((TextField) event.getSource()).getPromptText());
+            queenBeeIntervalField.setText(String.valueOf(QueenBee.getDelay()));
         }
     }
 
@@ -110,18 +127,64 @@ public class AppController {
     }
 
     public static ButtonType showStatsDialog() {
-        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.setHeaderText("Статистика");
-        dialog.setContentText(MainApplication.instance.habitat
-                .getStatisticString(MainApplication.instance.elapsed));
-        Optional<ButtonType> buttonTypeOptional = dialog.showAndWait();
+        statsDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        statsDialog.setHeaderText("Статистика");
+        statsDialog.setContentText(MainApplication.instance.habitat.getStatisticString(MainApplication.instance.elapsed));
+        Optional<ButtonType> buttonTypeOptional = statsDialog.showAndWait();
 
         return buttonTypeOptional.orElse(null);
     }
 
-    private void showError(String message) {
+    public static void showInputError(String fieldName) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText(message);
+        alert.setContentText("Вы ввели некорректные данные в поле \"" + fieldName + "\". Введите корректные данные в поле " +
+                "(положительное целое число) и попробуйте ещё раз.");
         alert.showAndWait();
+    }
+
+    public static void updateDialogBoxText() {
+        if (statsDialog != null) {
+            Platform.runLater(() -> statsDialog.setContentText(MainApplication.instance.habitat.getStatisticString(MainApplication.instance.elapsed)));
+        }
+    }
+
+    public void onExitApplicationMenuItemAction(ActionEvent actionEvent) {
+        System.exit(0);
+    }
+
+    public void onStartSimMenuItemAction(ActionEvent actionEvent) {
+        MainApplication.instance.habitat.startSimulation();
+    }
+
+    public void onEndSimMenuItemAction(ActionEvent actionEvent) {
+        MainApplication.instance.habitat.stopSimulation();
+    }
+
+    public void onShowTimeMenuItemAction(ActionEvent actionEvent) {
+        CheckMenuItem item = (CheckMenuItem) actionEvent.getSource();
+        RadioButton showRadBtn = (RadioButton) MainApplication.instance.habitat.getRoot().getLeft()
+                .lookup("#showTimeRadioBtn");
+        RadioButton hideRadBtn = (RadioButton) MainApplication.instance.habitat.getRoot().getLeft()
+                .lookup("#hideTimeRadioBtn");
+
+        showRadBtn.setSelected(item.isSelected());
+        hideRadBtn.setSelected(!item.isSelected());
+
+        MainApplication.instance.habitat.setSimulationTimeVisibility(item.isSelected());
+    }
+
+    public void onShowStatsMenuItemAction(ActionEvent actionEvent) {
+        CheckMenuItem item = (CheckMenuItem) actionEvent.getSource();
+        CheckBox chkBox = (CheckBox) MainApplication.instance.habitat.getRoot().getLeft().lookup("#showStatsChkBox");
+        chkBox.setSelected(item.isSelected());
+    }
+
+    public void onShowStatsChkBoxAction(ActionEvent actionEvent) {
+        CheckBox chkBox = (CheckBox) actionEvent.getSource();
+        MenuBar menuBar = (MenuBar) MainApplication.instance.habitat.getRoot().lookup("#menuBar");
+        Menu menu = menuBar.getMenus().get(0);
+
+        menu.getItems().stream().filter(x -> x instanceof CheckMenuItem && x.getId().equalsIgnoreCase("showStatsMenuItem")).findAny()
+                .ifPresent(x -> ((CheckMenuItem) x).setSelected(chkBox.isSelected()));
     }
 }

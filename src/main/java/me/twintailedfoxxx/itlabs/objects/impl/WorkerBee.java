@@ -29,4 +29,8 @@ public class WorkerBee extends Bee implements IBehaviour {
     public static double getChance() {
         return chance;
     }
+
+    public static int getDelay() {
+        return delay;
+    }
 }
