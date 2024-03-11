@@ -13,10 +13,7 @@ import me.twintailedfoxxx.itlabs.objects.impl.WorkerBee;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Habitat
@@ -29,6 +26,16 @@ public class Habitat
 
     /** Список созданных пчёл **/
     private final List<Bee> bees;
+
+    /**
+     * Хеш-набор уникальных идентификаторов
+     */
+    private final HashSet<Integer> beeIds;
+
+    /**
+     * Древовидный Map
+     */
+    private final TreeMap<Long, Bee> beeByBirthTime;
 
     /** Ширина поля **/
     private double width;
@@ -55,8 +62,10 @@ public class Habitat
         this.width = width;
         this.height = height;
         this.root = root;
+        this.simulationField = (Pane) root.getRight();
         this.bees = new ArrayList<>();
-        this.simulationField = (Pane)root.getRight();
+        this.beeIds = new HashSet<>();
+        this.beeByBirthTime = new TreeMap<>();
     }
 
     /**
@@ -67,11 +76,12 @@ public class Habitat
         if(simulationRunning) {
             Bee bee = generateRandomBee();
             if(bee != null && TimeUnit.MILLISECONDS.toSeconds(elapsed) % bee.getSpawnDelay() == 0L) {
-                placeBee(bee);
+                placeBee(bee, elapsed);
             }
-
             updateTime(elapsed);
-            AppController.updateDialogBoxText();
+            if (MainApplication.instance.aliveBees != null) {
+                MainApplication.instance.aliveBees.updateTable();
+            }
         }
     }
 
@@ -98,8 +108,10 @@ public class Habitat
             String errorFieldId = ex.getMessage().split(":")[1].replace(" ", "");
             TextField errorField = (TextField) root.getLeft().lookup("#" + errorFieldId);
             AppController.showInputError(errorField.getPromptText());
-            errorField.setText(String.valueOf(errorFieldId.toLowerCase().contains("queen") ? QueenBee.getDelay() :
-                    WorkerBee.getDelay()));
+            if (errorField.getId().contains("IntervalField")) {
+                errorField.setText(String.valueOf(errorFieldId.toLowerCase().contains("queen") ? QueenBee.getDelay() :
+                        WorkerBee.getDelay()));
+            }
         }
     }
 
@@ -118,6 +130,8 @@ public class Habitat
             simulationRunning = false;
             MainApplication.instance.timer.cancel();
             bees.clear();
+            beeIds.clear();
+            beeByBirthTime.clear();
             simulationField.getChildren().removeIf(x -> x instanceof ImageView);
             toggleSimulationButtons();
             toggleFields();
@@ -170,6 +184,14 @@ public class Habitat
      */
     public List<Bee> getSpawnedBees() {
         return bees;
+    }
+
+    public HashSet<Integer> getBeeIds() {
+        return beeIds;
+    }
+
+    public TreeMap<Long, Bee> getBeeByBirthTimeMap() {
+        return beeByBirthTime;
     }
 
     /**
@@ -229,10 +251,17 @@ public class Habitat
      * Разместить пчелу <code>Bee</code> на сцену.
      * @param bee размещаемая пчела.
      */
-    private void placeBee(Bee bee) {
+    private void placeBee(Bee bee, long birthTime) {
+        bee.setId(((bees.isEmpty()) ? 1 : bees.size()) * (MainApplication.instance.random.nextInt(900000 - 100000)
+                + 100000));
+        bee.setBirthTime(birthTime);
+        bees.add(bee);
+        beeIds.add(bee.getId());
+        beeByBirthTime.put(bee.getBirthTime(), bee);
         bees.add(bee);
 
         ImageView view = new ImageView(bee.getImage());
+        view.setId("bee-" + bee.getId());
         view.setFitWidth(30);
         view.setFitHeight(30);
 
@@ -242,6 +271,28 @@ public class Habitat
         view.setY(y);
 
         Platform.runLater(() -> simulationField.getChildren().add(view));
+
+        Timer lifeTimer = new Timer();
+        lifeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                destroy(bee);
+                lifeTimer.cancel();
+            }
+        }, 1000L * bee.getLifeTime());
+    }
+
+    /**
+     * Уничтожение объекта пчелы
+     *
+     * @param bee уничтожаемый объект пчелы
+     */
+    private void destroy(Bee bee) {
+        Platform.runLater(() -> simulationField.getChildren().removeIf(x -> Objects.equals(x.getId(), "bee-" +
+                bee.getId())));
+        bees.remove(bee);
+        beeIds.remove(bee.getId());
+        beeByBirthTime.remove(bee.getBirthTime());
     }
 
     public String getStatisticString(long elapsed) {
@@ -285,11 +336,17 @@ public class Habitat
         try {
             TextField workerIntervalField = (TextField) root.getLeft().lookup("#workerBeeIntervalField");
             TextField queenBeeIntervalField = (TextField) root.getLeft().lookup("#queenBeeIntervalField");
+            TextField workerBeeLifetimeField = (TextField) root.getLeft().lookup("#workerBeeLifetimeField");
+            TextField queenBeeLifetimeField = (TextField) root.getLeft().lookup("#queenBeeLifetimeField");
 
             errorField = workerIntervalField;
             int workerBeeInterval = Integer.parseInt(workerIntervalField.getText());
             errorField = queenBeeIntervalField;
             int queenBeeInterval = Integer.parseInt(queenBeeIntervalField.getText());
+            errorField = workerBeeLifetimeField;
+            int workerBeeLifetime = Integer.parseInt(workerBeeLifetimeField.getText());
+            errorField = queenBeeLifetimeField;
+            int queenBeeLifetime = Integer.parseInt(queenBeeLifetimeField.getText());
 
             errorField = workerIntervalField;
             if (workerBeeInterval > 0) {
@@ -305,12 +362,29 @@ public class Habitat
                 throw new IllegalArgumentException("Interval must be a positive number: " + errorField.getId());
             }
 
+            errorField = workerBeeLifetimeField;
+            if (workerBeeLifetime > 0) {
+                WorkerBee.setLifetime(workerBeeLifetime);
+            } else {
+                throw new IllegalArgumentException("Lifetime must be a positive number: " + errorField.getId());
+            }
+
+            errorField = queenBeeLifetimeField;
+            if (queenBeeLifetime > 0) {
+                QueenBee.setLifetime(queenBeeLifetime);
+            } else {
+                throw new IllegalArgumentException("Lifetime must be a positive number: " + errorField.getId());
+            }
+
             return true;
         } catch (NumberFormatException ex) {
             assert errorField != null;
             AppController.showInputError(errorField.getPromptText());
-            errorField.setText(String.valueOf(errorField.getId().toLowerCase().contains("queen") ? QueenBee.getDelay() :
-                    WorkerBee.getDelay()));
+            if (errorField.getId().contains("IntervalField")) {
+                errorField.setText(String.valueOf(errorField.getId().toLowerCase().contains("queen") ? QueenBee.getDelay() :
+                        WorkerBee.getDelay()));
+            }
+
             return false;
         }
     }

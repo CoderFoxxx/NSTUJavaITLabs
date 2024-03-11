@@ -21,7 +21,10 @@ public class MainApplication extends Application {
     public Habitat habitat;
     public Random random;
     public Timer timer;
+    public AliveBeesDialog aliveBees;
     public long elapsed;
+
+    private Stage stage;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -29,6 +32,7 @@ public class MainApplication extends Application {
         Scene scene;
 
         instance = this;
+        this.stage = stage;
         random = new Random();
         habitat = new Habitat(root, 800, 600);
         scene = new Scene(root, habitat.getWidth(), habitat.getHeight());
@@ -70,5 +74,9 @@ public class MainApplication extends Application {
         ComboBox<Double> queenBeePercentBox = (ComboBox<Double>) habitat.getRoot().getLeft().lookup("#queenBeePercentCmbBox");
         workerBeePossibilityBox.getSelectionModel().select(workerBeePossibilityBox.getItems().indexOf(WorkerBee.getChance()));
         queenBeePercentBox.getSelectionModel().select(queenBeePercentBox.getItems().indexOf(QueenBee.getThreshold()));
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

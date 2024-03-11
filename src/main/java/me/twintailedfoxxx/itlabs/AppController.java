@@ -56,6 +56,16 @@ public class AppController {
 
     @FXML
     private ComboBox<Double> queenBeePercentCmbBox;
+
+    @FXML
+    private TextField workerBeeLifetimeField;
+
+    @FXML
+    private TextField queenBeeLifetimeField;
+
+    @FXML
+    private Button aliveBeesBtn;
+
     private static Alert statsDialog;
 
     @FXML
@@ -186,5 +196,32 @@ public class AppController {
 
         menu.getItems().stream().filter(x -> x instanceof CheckMenuItem && x.getId().equalsIgnoreCase("showStatsMenuItem")).findAny()
                 .ifPresent(x -> ((CheckMenuItem) x).setSelected(chkBox.isSelected()));
+    }
+
+    @FXML
+    private void onWorkerBeeLifetimeFieldAction(ActionEvent event) {
+        try {
+            WorkerBee.setLifetime(Integer.parseInt(workerBeeLifetimeField.getText()));
+        } catch (NumberFormatException ex) {
+            showInputError(((TextField) event.getSource()).getPromptText());
+        }
+    }
+
+    @FXML
+    private void onQueenBeeLifetimeFieldAction(ActionEvent event) {
+        try {
+            QueenBee.setLifetime(Integer.parseInt(queenBeeLifetimeField.getText()));
+        } catch (NumberFormatException ex) {
+            showInputError(((TextField) event.getSource()).getPromptText());
+        }
+    }
+
+    @FXML
+    private void onAliveBeesBtnClick(MouseEvent event) {
+        if (MainApplication.instance.aliveBees == null) {
+            MainApplication.instance.aliveBees = new AliveBeesDialog(MainApplication.instance.getStage().getOwner());
+        }
+
+        MainApplication.instance.aliveBees.show();
     }
 }

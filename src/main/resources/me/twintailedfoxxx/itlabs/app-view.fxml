@@ -40,7 +40,6 @@
                <Insets bottom="5.0" />
             </VBox.margin>
          </TextField>
-           <Button fx:id="applyParamsBtn" mnemonicParsing="false" text="Применить параметры"/>
            <Label text="Вероятность появления рабочих пчёл"/>
            <ComboBox id="workerBeeSpawnPossibilityCmbBox" fx:id="workerBeeSpawnPossibilityCmbBox"
                      onAction="#onWorkerBeeSpawnPossibilityCmbBoxAction" prefHeight="25.0" prefWidth="266.0"
@@ -97,6 +96,22 @@
            </RadioButton>
            <CheckBox fx:id="showStatsChkBox" mnemonicParsing="false" text="Показывать статистику"
                      onAction="#onShowStatsChkBoxAction"/>
+           <TextField id="workerBeeLifetimeField" fx:id="workerBeeLifetimeField" layoutX="16.0" layoutY="233.0"
+                      maxWidth="260.0" onAction="#onWorkerBeeLifetimeFieldAction"
+                      promptText="Время жизни рабочей пчелы (в секундах)">
+               <VBox.margin>
+                   <Insets bottom="5.0"/>
+               </VBox.margin>
+           </TextField>
+           <TextField id="queenBeeLifetimeField" fx:id="queenBeeLifetimeField" layoutX="16.0" layoutY="341.0"
+                      maxWidth="260.0" onAction="#onQueenBeeLifetimeFieldAction"
+                      promptText="Время жизни трутня (в секундах)"/>
+           <Button id="aliveBeesBtn" fx:id="aliveBeesBtn" mnemonicParsing="false" onMouseClicked="#onAliveBeesBtnClick"
+                   prefHeight="25.0" prefWidth="260.0" text="Показать живых пчел">
+               <VBox.margin>
+                   <Insets top="10.0"/>
+               </VBox.margin>
+           </Button>
        </VBox>
    </left>
    <right>

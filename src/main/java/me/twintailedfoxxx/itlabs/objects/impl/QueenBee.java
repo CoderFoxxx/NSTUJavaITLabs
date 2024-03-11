@@ -12,9 +12,12 @@ import java.util.Objects;
 public class QueenBee extends Bee implements IBehaviour {
     private static int delay = 5;
     private static double threshold = 0.2;
+    private static int lifeTime = 20;
 
     public QueenBee() {
+        setId(0);
         setSpawnDelay(delay);
+        setLifeTime(lifeTime);
         setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png"))));
     }
 
@@ -30,7 +33,16 @@ public class QueenBee extends Bee implements IBehaviour {
         QueenBee.delay = delay;
     }
 
+    public static void setLifetime(int lifeTime) {
+        QueenBee.lifeTime = lifeTime;
+    }
+
     public static int getDelay() {
         return delay;
+    }
+
+    @Override
+    public String toString() {
+        return "Queen" + super.toString();
     }
 }
