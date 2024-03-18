@@ -49,4 +49,9 @@ public class WorkerBee extends Bee implements IBehaviour {
     public String toString() {
         return "Worker" + super.toString();
     }
+
+    @Override
+    public void move() {
+
+    }
 }

@@ -31,7 +31,7 @@ public class Habitat
     /**
      * Хеш-набор уникальных идентификаторов
      */
-    private final HashSet<Integer> beeIds;
+    private final HashSet<Long> beeIds;
 
     /**
      * Древовидный Map
@@ -187,7 +187,7 @@ public class Habitat
         return bees;
     }
 
-    public HashSet<Integer> getBeeIds() {
+    public HashSet<Long> getBeeIds() {
         return beeIds;
     }
 

@@ -6,12 +6,15 @@ import javafx.beans.property.SimpleLongProperty;
 /**
  * Пчела
  */
-public abstract class Bee
+public abstract class Bee extends BaseAI
 {
+    private double x;
+    private double y;
+
     /**
      * Уникальный идентифиатор объекта пчелы
      */
-    private int id;
+    private long id;
 
     /**
      * Период между появлениями новых пчел в секундах
@@ -28,12 +31,28 @@ public abstract class Bee
      */
     private long birthTime;
 
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
     /**
      * Уникальный идентификатор пчелы
      *
      * @return уникальный идентифиатор объекта пчелы
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -98,8 +117,8 @@ public abstract class Bee
         this.birthTime = birthTime;
     }
 
-    public SimpleIntegerProperty idProperty() {
-        return new SimpleIntegerProperty(id);
+    public SimpleLongProperty idProperty() {
+        return new SimpleLongProperty(id);
     }
 
     public SimpleIntegerProperty spawnDelayProperty() {

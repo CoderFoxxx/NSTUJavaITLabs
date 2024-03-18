@@ -46,4 +46,9 @@ public class QueenBee extends Bee implements IBehaviour {
     public String toString() {
         return "Queen" + super.toString();
     }
+
+    @Override
+    public void move() {
+
+    }
 }

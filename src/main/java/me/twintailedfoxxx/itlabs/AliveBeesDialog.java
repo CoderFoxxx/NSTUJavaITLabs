@@ -43,7 +43,7 @@ public class AliveBeesDialog extends Dialog<Void> {
 
     @FXML
     public void initialize() {
-        TableColumn<Bee, Integer> idCol = new TableColumn<>("ID");
+        TableColumn<Bee, Long> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
 
         TableColumn<Bee, Integer> spawnDelayCol = new TableColumn<>("Spawn Delay (s)");
