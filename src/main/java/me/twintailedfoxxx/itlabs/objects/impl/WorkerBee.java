@@ -14,11 +14,15 @@ public class WorkerBee extends Bee implements IBehaviour {
     private static double chance = 0.9;
     private static int lifeTime = 10;
 
+    /**
+     * Картинка рабочей пчелы
+     **/
+    public static final Image IMAGE = new Image(Objects.requireNonNull(WorkerBee.class.getResourceAsStream("/worker_bee.png")));
+
     public WorkerBee() {
         setId(0);
         setSpawnDelay(delay);
         setLifeTime(lifeTime);
-        setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/worker_bee.png"))));
     }
 
     public static void setDelay(int delay) {

@@ -15,8 +15,8 @@
                <Insets />
            </opaqueInsets>
            <Text id="hintText" fx:id="hintText" strokeType="OUTSIDE" strokeWidth="0.0" />
-           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false"
-                   onMouseClicked="#onStartSimBtnClick" prefHeight="25.0" prefWidth="260.0" text="Начать симуляцию (B)">
+           <Button id="beginSimBtn" fx:id="beginSimBtn" mnemonicParsing="false" onMouseClicked="#onStartSimBtnClick"
+                   prefHeight="25.0" prefWidth="260.0" text="Начать симуляцию (B)">
             <VBox.margin>
                <Insets bottom="5.0" />
             </VBox.margin></Button>
@@ -82,8 +82,7 @@
              </items>
          </ComboBox>
            <RadioButton fx:id="showTimeRadioBtn" mnemonicParsing="false" onAction="#onShowTimeRadioBtnClick"
-                        selected="true"
-                        text="Показать время">
+                        selected="true" text="Показать время">
                <padding>
                    <Insets bottom="5.0"/>
                </padding>
@@ -94,8 +93,13 @@
                    <Insets bottom="5.0"/>
                </padding>
            </RadioButton>
-           <CheckBox fx:id="showStatsChkBox" mnemonicParsing="false" text="Показывать статистику"
-                     onAction="#onShowStatsChkBoxAction"/>
+           <CheckBox fx:id="showStatsChkBox" mnemonicParsing="false" onAction="#onShowStatsChkBoxAction"
+                     text="Показывать статистику"/>
+           <Label text="Время жизни рабочей пчелы (в сек.)">
+               <padding>
+                   <Insets top="5.0"/>
+               </padding>
+           </Label>
            <TextField id="workerBeeLifetimeField" fx:id="workerBeeLifetimeField" layoutX="16.0" layoutY="233.0"
                       maxWidth="260.0" onAction="#onWorkerBeeLifetimeFieldAction"
                       promptText="Время жизни рабочей пчелы (в секундах)">
@@ -103,6 +107,7 @@
                    <Insets bottom="5.0"/>
                </VBox.margin>
            </TextField>
+           <Label text="Время жизни трутня (в сек.)"/>
            <TextField id="queenBeeLifetimeField" fx:id="queenBeeLifetimeField" layoutX="16.0" layoutY="341.0"
                       maxWidth="260.0" onAction="#onQueenBeeLifetimeFieldAction"
                       promptText="Время жизни трутня (в секундах)"/>
@@ -117,24 +122,21 @@
    <right>
        <Pane id="simulationField" fx:id="simulationField" maxHeight="1.7976931348623157E308"
              maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-             prefWidth="1200.0"
-             style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER"/>
+             prefWidth="1200.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER"/>
    </right>
     <top>
         <MenuBar id="menuBar" fx:id="menuBar" BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="Simulation">
-                <MenuItem id="startSimMenuItem" fx:id="startSimMenuItem" mnemonicParsing="false" text="Start simulation"
-                          onAction="#onStartSimMenuItemAction"/>
-                <MenuItem id="stopSimMenuItem" fx:id="stopSimMenuItem" mnemonicParsing="false" text="Stop simulation"
-                          onAction="#onEndSimMenuItemAction"/>
-                <CheckMenuItem id="showTimeMenuItem" fx:id="showTimeMenuItem" mnemonicParsing="false" text="Show time"
-                               onAction="#onShowTimeMenuItemAction"/>
+                <MenuItem id="startSimMenuItem" fx:id="startSimMenuItem" mnemonicParsing="false"
+                          onAction="#onStartSimMenuItemAction" text="Start simulation"/>
+                <MenuItem id="stopSimMenuItem" fx:id="stopSimMenuItem" mnemonicParsing="false"
+                          onAction="#onEndSimMenuItemAction" text="Stop simulation"/>
+                <CheckMenuItem id="showTimeMenuItem" fx:id="showTimeMenuItem" mnemonicParsing="false"
+                               onAction="#onShowTimeMenuItemAction" text="Show time"/>
                 <CheckMenuItem id="showStatsMenuItem" fx:id="showStatsMenuItem" mnemonicParsing="false"
-                               text="Show stats"
-                               onAction="#onShowStatsMenuItemAction"/>
+                               onAction="#onShowStatsMenuItemAction" text="Show stats"/>
                 <MenuItem id="exitApplicationMenuItem" fx:id="exitApplicationMenuItem" mnemonicParsing="false"
-                          text="Close"
-                          onAction="#onExitApplicationMenuItemAction"/>
+                          onAction="#onExitApplicationMenuItemAction" text="Close"/>
             </Menu>
         </MenuBar>
     </top>

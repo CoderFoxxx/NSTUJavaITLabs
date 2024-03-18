@@ -70,6 +70,9 @@ public class MainApplication extends Application {
     private void setDefaultValues() {
         ((TextField) habitat.getRoot().getLeft().lookup("#workerBeeIntervalField")).setText("2");
         ((TextField) habitat.getRoot().getLeft().lookup("#queenBeeIntervalField")).setText("5");
+        ((TextField) habitat.getRoot().getLeft().lookup("#workerBeeLifetimeField")).setText("10");
+        ((TextField) habitat.getRoot().getLeft().lookup("#queenBeeLifetimeField")).setText("20");
+
         ComboBox<Double> workerBeePossibilityBox = (ComboBox<Double>) habitat.getRoot().getLeft().lookup("#workerBeeSpawnPossibilityCmbBox");
         ComboBox<Double> queenBeePercentBox = (ComboBox<Double>) habitat.getRoot().getLeft().lookup("#queenBeePercentCmbBox");
         workerBeePossibilityBox.getSelectionModel().select(workerBeePossibilityBox.getItems().indexOf(WorkerBee.getChance()));

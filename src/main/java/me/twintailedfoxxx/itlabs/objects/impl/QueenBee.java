@@ -14,11 +14,12 @@ public class QueenBee extends Bee implements IBehaviour {
     private static double threshold = 0.2;
     private static int lifeTime = 20;
 
+    public static final Image IMAGE = new Image(Objects.requireNonNull(QueenBee.class.getResourceAsStream("/queen_bee.png")));
+
     public QueenBee() {
         setId(0);
         setSpawnDelay(delay);
         setLifeTime(lifeTime);
-        setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png"))));
     }
 
     public static double getThreshold() {

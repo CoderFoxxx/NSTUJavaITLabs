@@ -2,7 +2,6 @@ package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.scene.image.Image;
 
 /**
  * Пчела
@@ -28,9 +27,6 @@ public abstract class Bee
      * Время рождения пчелы в миллисекундах
      */
     private long birthTime;
-
-    /** Картинка пчелы */
-    private Image image;
 
     /**
      * Уникальный идентификатор пчелы
@@ -100,22 +96,6 @@ public abstract class Bee
      */
     public void setBirthTime(long birthTime) {
         this.birthTime = birthTime;
-    }
-
-    /**
-     * Картинка пчелы
-     * @return объект картинки пчелы
-     */
-    public Image getImage() {
-        return image;
-    }
-
-    /**
-     * Установить новую картинку для пчелы
-     * @param image новая картинка для пчелы
-     */
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     public SimpleIntegerProperty idProperty() {

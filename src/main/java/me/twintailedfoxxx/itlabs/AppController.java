@@ -66,6 +66,24 @@ public class AppController {
     @FXML
     private Button aliveBeesBtn;
 
+    @FXML
+    private MenuBar menuBar;
+
+    @FXML
+    private MenuItem startSimMenuItem;
+
+    @FXML
+    private MenuItem stopSimMenuItem;
+
+    @FXML
+    private MenuItem showTimeMenuItem;
+
+    @FXML
+    private MenuItem showStatsMenuItem;
+
+    @FXML
+    private MenuItem exitApplicationMenuItem;
+
     private static Alert statsDialog;
 
     @FXML
