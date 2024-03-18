@@ -1,6 +1,7 @@
 package me.twintailedfoxxx.itlabs.objects;
 
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -274,16 +275,16 @@ public class Habitat
 
     @SuppressWarnings("unchecked")
     private void toggleFields() {
-        TextField workerIntervalField = (TextField) root.getLeft().lookup("#workerBeeIntervalField");
-        TextField queenBeeIntervalField = (TextField) root.getLeft().lookup("#queenBeeIntervalField");
         ComboBox<Double> workerBeePossibility = (ComboBox<Double>) root.getLeft()
                 .lookup("#workerBeeSpawnPossibilityCmbBox");
         ComboBox<Double> queenBeePercent = (ComboBox<Double>) root.getLeft().lookup("#queenBeePercentCmbBox");
 
-        workerIntervalField.setDisable(simulationRunning);
-        queenBeeIntervalField.setDisable(simulationRunning);
         workerBeePossibility.setDisable(simulationRunning);
         queenBeePercent.setDisable(simulationRunning);
+
+        for (Node node : ((Pane) root.getLeft()).getChildren().filtered(x -> x instanceof TextField)) {
+            node.setDisable(simulationRunning);
+        }
     }
 
     private boolean setSimulationValues() throws IllegalArgumentException {
