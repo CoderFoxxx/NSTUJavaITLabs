@@ -1,14 +1,11 @@
 package me.twintailedfoxxx.itlabs.objects;
 
-import javafx.scene.image.Image;
-
 /**
  * Пчела
  */
 public abstract class Bee
 {
     private int spawnDelay;
-    private Image image;
 
     /**
      * Время, через которое появится пчела
@@ -18,15 +15,12 @@ public abstract class Bee
         return spawnDelay;
     }
 
+    /**
+     * Установить время через которое появится пчела
+     *
+     * @param spawnDelay количество секунд, через которое появится пчела
+     */
     public void setSpawnDelay(int spawnDelay) {
         this.spawnDelay = spawnDelay;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
     }
 }

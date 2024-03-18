@@ -10,12 +10,18 @@ import java.util.Objects;
  * Трутень
  */
 public class QueenBee extends Bee implements IBehaviour {
+    /**
+     * Задержка появления трутня
+     **/
     private static int delay = 5;
+
+    /** Процент от всех пчел для появления трутня **/
     private static double threshold = 0.2;
+
+    public static final Image IMAGE = new Image(Objects.requireNonNull(QueenBee.class.getResourceAsStream("/queen_bee.png")));
 
     public QueenBee() {
         setSpawnDelay(delay);
-        setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/queen_bee.png"))));
     }
 
     public static double getThreshold() {

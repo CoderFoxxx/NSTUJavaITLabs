@@ -10,12 +10,21 @@ import java.util.Objects;
  * Рабочая пчела
  */
 public class WorkerBee extends Bee implements IBehaviour {
+    /**
+     * Задержка появления рабочей пчелы
+     **/
     private static int delay = 2;
+
+    /** Шанс появления рабочей пчелы **/
     private static double chance = 0.9;
+
+    /**
+     * Картинка рабочей пчелы
+     **/
+    public static final Image IMAGE = new Image(Objects.requireNonNull(WorkerBee.class.getResourceAsStream("/worker_bee.png")));
 
     public WorkerBee() {
         setSpawnDelay(delay);
-        setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/worker_bee.png"))));
     }
 
     public static void setDelay(int delay) {

@@ -232,7 +232,13 @@ public class Habitat
     private void placeBee(Bee bee) {
         bees.add(bee);
 
-        ImageView view = new ImageView(bee.getImage());
+        ImageView view;
+        if (bee instanceof QueenBee) {
+            view = new ImageView(QueenBee.IMAGE);
+        } else {
+            view = new ImageView(WorkerBee.IMAGE);
+        }
+
         view.setFitWidth(30);
         view.setFitHeight(30);
 
