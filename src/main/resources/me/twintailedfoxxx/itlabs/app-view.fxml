@@ -40,7 +40,6 @@
                <Insets bottom="5.0" />
             </VBox.margin>
          </TextField>
-           <Button fx:id="applyParamsBtn" mnemonicParsing="false" text="Применить параметры"/>
            <Label text="Вероятность появления рабочих пчёл"/>
            <ComboBox id="workerBeeSpawnPossibilityCmbBox" fx:id="workerBeeSpawnPossibilityCmbBox"
                      onAction="#onWorkerBeeSpawnPossibilityCmbBoxAction" prefHeight="25.0" prefWidth="266.0"
