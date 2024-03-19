@@ -274,8 +274,10 @@ public class Habitat
 
         double x = MainApplication.instance.random.nextDouble() * (width - view.getFitWidth());
         double y = MainApplication.instance.random.nextDouble() * (height - view.getFitHeight());
-        view.setX(x);
-        view.setY(y);
+        bee.setX(x);
+        bee.setY(y);
+        view.setX(bee.getX());
+        view.setY(bee.getY());
 
         Platform.runLater(() -> simulationField.getChildren().add(view));
 
